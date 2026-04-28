@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -102,6 +102,7 @@ function ProductCatalogModal({
   onConsultClick: (productName: string) => void;
 }) {
   const [activeTab, setActiveTab] = useState(initialGroupId || groups[0]?.group?._id || '');
+  const [activeSubCategory, setActiveSubCategory] = useState<string | null>(null);
   const [detailProduct, setDetailProduct] = useState<any>(null);
   const tabRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -111,12 +112,28 @@ function ProductCatalogModal({
   }, [initialGroupId]);
 
   useEffect(() => {
+    setActiveSubCategory(null);
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
     }
   }, [activeTab]);
 
   const activeGroupData = groups.find((g) => g.group._id === activeTab);
+  
+  const subCategories = useMemo(() => {
+    if (!activeGroupData) return [];
+    const cats = new Set<string>();
+    activeGroupData.products.forEach((p: any) => {
+      if (p.category) cats.add(p.category);
+    });
+    return Array.from(cats).sort();
+  }, [activeGroupData]);
+
+  const filteredProducts = useMemo(() => {
+    if (!activeGroupData) return [];
+    if (!activeSubCategory) return activeGroupData.products;
+    return activeGroupData.products.filter((p: any) => p.category === activeSubCategory);
+  }, [activeGroupData, activeSubCategory]);
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center">
@@ -170,12 +187,41 @@ function ProductCatalogModal({
               </button>
             ))}
           </div>
+          
+          {/* Sub-Categories */}
+          {subCategories.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide py-3 mt-2 border-t border-zinc-50">
+              <button
+                onClick={() => setActiveSubCategory(null)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+                  activeSubCategory === null
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                }`}
+              >
+                전체
+              </button>
+              {subCategories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveSubCategory(cat)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+                    activeSubCategory === cat
+                      ? 'bg-zinc-900 text-white'
+                      : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Grid */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-            {activeGroupData?.products.map((product: any) => (
+            {filteredProducts.map((product: any) => (
               <div
                 key={product._id}
                 className="group bg-white border border-zinc-200 rounded-2xl overflow-hidden hover:border-zinc-300 hover:shadow-lg transition-all flex flex-col h-full"
@@ -192,6 +238,18 @@ function ProductCatalogModal({
                     />
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
+                    <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                      {product.brand && (
+                        <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase tracking-tighter">
+                          {product.brand}
+                        </span>
+                      )}
+                      {product.category && (
+                        <span className="text-[9px] font-black text-zinc-500 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200 uppercase tracking-tighter">
+                          {product.category}
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-sm font-bold text-zinc-900 mb-3 leading-tight">
                       {product.name}
                     </h4>
@@ -318,6 +376,18 @@ function ProductCard({
           )}
         </div>
         <div className="p-5 flex-1 flex flex-col">
+          <div className="flex flex-wrap items-center gap-1.5 mb-2">
+            {product.brand && (
+              <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase tracking-tighter">
+                {product.brand}
+              </span>
+            )}
+            {product.category && (
+              <span className="text-[9px] font-black text-zinc-500 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200 uppercase tracking-tighter">
+                {product.category}
+              </span>
+            )}
+          </div>
           <h4 className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-tight mb-2 sm:mb-3">
             {product.name}
           </h4>

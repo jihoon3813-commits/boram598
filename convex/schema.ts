@@ -85,5 +85,7 @@ export default defineSchema({
     showOnMain: v.boolean(),
     order: v.number(),
     originalUrl: v.string(),
+    brand: v.optional(v.string()),
+    category: v.optional(v.string()),
   }).index("by_groupId", ["groupId", "order"]).index("by_order", ["order"]),
 });

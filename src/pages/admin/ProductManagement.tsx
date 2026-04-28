@@ -13,7 +13,11 @@ import {
   Layers,
   Save,
   X,
-  Menu
+  Menu,
+  SortAsc,
+  ArrowDownAz,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -69,10 +73,20 @@ function SortableProductItem({ product, onUpdate, onDelete, onEdit }: { product:
       
       <div className="flex-1 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+          {product.brand && (
+            <span className="text-[9px] lg:text-[10px] font-black text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase tracking-tighter">
+              {product.brand}
+            </span>
+          )}
           <h4 className="font-bold text-zinc-900 truncate text-sm lg:text-base">{product.name}</h4>
           <span className="text-[9px] lg:text-[10px] bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded-full border border-zinc-200 w-fit">
             {product.modelName || '모델명 없음'}
           </span>
+          {product.category && (
+            <span className="text-[9px] lg:text-[10px] bg-zinc-800 text-zinc-100 px-2 py-0.5 rounded-full border border-zinc-900 w-fit">
+              {product.category}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3 text-[10px] lg:text-xs text-zinc-500">
           <span className="truncate">{product.paymentMethods.join(' / ')}</span>
@@ -160,6 +174,7 @@ export default function ProductManagement() {
   const updateProduct = useMutation(api.products.updateProduct);
   const deleteProduct = useMutation(api.products.deleteProduct);
   const reorderProducts = useMutation(api.products.reorderProducts);
+  const autoCategorize = useMutation(api.products.autoCategorizeAll);
 
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<any>(null);
@@ -168,8 +183,10 @@ export default function ProductManagement() {
   const [editingProduct, setEditingProduct] = useState<any>(null);
 
   const [isFetching, setIsFetching] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(true);
   const [modalPaymentMethods, setModalPaymentMethods] = useState<string[]>(['60개월 렌탈', '신한 48페이']);
+  const [sortMode, setSortMode] = useState<'manual' | 'brand_category' | 'category_brand'>('manual');
 
   useEffect(() => {
     if (isProductModalOpen) {
@@ -194,6 +211,7 @@ export default function ProductManagement() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id && products) {
+      setSortMode('manual'); // Dragging manually switches to manual mode
       const oldIndex = products.findIndex((p) => p._id === active.id);
       const newIndex = products.findIndex((p) => p._id === over.id);
       
@@ -202,6 +220,107 @@ export default function ProductManagement() {
       reorderProducts({ orders });
     }
   };
+
+
+  const handleSaveCurrentOrder = async () => {
+    if (!products || isSaving) return;
+    
+    // Flatten the current groupedProducts to get the visual order
+    const flatList: any[] = [];
+    groupedProducts.forEach(g => flatList.push(...g.items));
+
+    setIsSaving(true);
+    try {
+      const orders = flatList.map((p, idx) => ({ id: p._id, order: idx }));
+      await reorderProducts({ orders });
+      alert('현재 순서가 영구 저장되었습니다.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleResetToAlphabetical = async (mode: 'brand_category' | 'category_brand') => {
+    if (!products || isSaving) return;
+    if (!confirm('현재 그룹의 모든 제품을 가나다순으로 자동 정렬하시겠습니까?')) return;
+
+    const sorted = [...products].sort((a, b) => {
+      if (mode === 'brand_category') {
+        const brandCompare = (a.brand || '').localeCompare(b.brand || '');
+        if (brandCompare !== 0) return brandCompare;
+        return (a.category || '').localeCompare(b.category || '');
+      } else {
+        const catCompare = (a.category || '').localeCompare(b.category || '');
+        if (catCompare !== 0) return catCompare;
+        return (a.brand || '').localeCompare(b.brand || '');
+      }
+    });
+
+    setIsSaving(true);
+    try {
+      const orders = sorted.map((p, idx) => ({ id: p._id, order: idx }));
+      await reorderProducts({ orders });
+      alert('가나다순으로 정렬되었습니다.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleMoveGroup = async (groupTitle: string, direction: 'up' | 'down') => {
+    if (!products || isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      // 1. Get current flattened order based on sortMode or current order
+      const flatList: any[] = [];
+      groupedProducts.forEach(g => flatList.push(...g.items));
+
+      // 2. Find the index range of the group to move
+      const groupIdx = groupedProducts.findIndex(g => g.title === groupTitle);
+      if (groupIdx === -1) return;
+      if (direction === 'up' && groupIdx === 0) return;
+      if (direction === 'down' && groupIdx === groupedProducts.length - 1) return;
+
+      const targetIdx = direction === 'up' ? groupIdx - 1 : groupIdx + 1;
+      
+      // 3. Swap the groups in a temp array
+      const newGroups = [...groupedProducts];
+      const temp = newGroups[groupIdx];
+      newGroups[groupIdx] = newGroups[targetIdx];
+      newGroups[targetIdx] = temp;
+
+      // 4. Flatten and update order
+      const newFlatList: any[] = [];
+      newGroups.forEach(g => newFlatList.push(...g.items));
+      
+      const orders = newFlatList.map((p, idx) => ({ id: p._id, order: idx }));
+      await reorderProducts({ orders });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const groupedProducts = (() => {
+    if (!products) return [];
+    if (sortMode === 'manual') return [{ title: null, items: products }];
+
+    const groups: { title: string; items: any[] }[] = [];
+    
+    // Group items by the chosen field based on their CURRENT sequence in 'products'
+    products.forEach(p => {
+      const title = sortMode === 'brand_category' 
+        ? `${p.brand || '브랜드 없음'} > ${p.category || '카테고리 없음'}`
+        : `${p.category || '카테고리 없음'} > ${p.brand || '브랜드 없음'}`;
+      
+      const lastGroup = groups[groups.length - 1];
+      if (lastGroup && lastGroup.title === title) {
+        lastGroup.items.push(p);
+      } else {
+        groups.push({ title, items: [p] });
+      }
+    });
+
+    return groups;
+  })();
 
   const handleSaveGroup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,6 +360,8 @@ export default function ProductManagement() {
       detailHtml: formData.get('detailHtml') as string || '',
       showOnMain: formData.get('showOnMain') === 'on',
       order: editingProduct ? editingProduct.order : (products?.length || 0),
+      brand: formData.get('brand') as string || '',
+      category: formData.get('category') as string || '',
     };
 
     if (editingProduct) {
@@ -367,6 +488,18 @@ export default function ProductManagement() {
                     </button>
                   </div>
                 </div>
+                <div className="shrink-0 flex items-center">
+                  <button 
+                    onClick={async () => {
+                      if (!confirm('전체 제품의 브랜드와 카테고리를 자동으로 분류하시겠습니까?')) return;
+                      const count = await autoCategorize();
+                      alert(`${count}개의 제품 정보가 업데이트되었습니다.`);
+                    }}
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-3 rounded-xl text-xs font-black transition-all border border-zinc-700"
+                  >
+                    자동 분류 실행
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -385,7 +518,47 @@ export default function ProductManagement() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  <div className="flex bg-zinc-100 p-1 rounded-lg gap-1 flex-1 sm:flex-none">
+                    <button 
+                      onClick={() => setSortMode('manual')}
+                      className={`px-3 py-1.5 rounded-md text-[10px] font-black transition-all ${sortMode === 'manual' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'}`}
+                    >
+                      수동
+                    </button>
+                    <button 
+                      onClick={() => setSortMode('brand_category')}
+                      className={`px-3 py-1.5 rounded-md text-[10px] font-black transition-all ${sortMode === 'brand_category' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'}`}
+                    >
+                      브랜드순
+                    </button>
+                    <button 
+                      onClick={() => setSortMode('category_brand')}
+                      className={`px-3 py-1.5 rounded-md text-[10px] font-black transition-all ${sortMode === 'category_brand' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'}`}
+                    >
+                      카테고리순
+                    </button>
+                  </div>
+
+                  {sortMode !== 'manual' && (
+                    <>
+                      <button 
+                        onClick={() => handleResetToAlphabetical(sortMode)}
+                        disabled={isSaving}
+                        className={`bg-zinc-800 text-white px-4 py-3 rounded-md text-xs font-black hover:bg-zinc-700 shadow-lg flex items-center gap-2 transition-all ${isSaving ? 'opacity-50 cursor-wait' : ''}`}
+                      >
+                        <RefreshCw size={14} className={isSaving ? 'animate-spin' : ''} /> 가나다순 정렬
+                      </button>
+                      <button 
+                        onClick={handleSaveCurrentOrder}
+                        disabled={isSaving}
+                        className={`bg-amber-500 text-white px-4 py-3 rounded-md text-xs font-black hover:bg-amber-600 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-all ${isSaving ? 'opacity-50 cursor-wait' : ''}`}
+                      >
+                        {isSaving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />} 현재 순서 저장
+                      </button>
+                    </>
+                  )}
+
                   <button 
                     onClick={async () => {
                       if (!activeGroup) return;
@@ -421,27 +594,56 @@ export default function ProductManagement() {
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
               >
-                <SortableContext 
-                  items={products?.map(p => p._id) || []}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {products?.map((product) => (
-                    <div key={product._id} className="relative group">
-                      <SortableProductItem 
-                        product={product} 
-                        onUpdate={(id, data) => updateProduct({ id, ...data })}
-                        onDelete={(id) => confirm('삭제하시겠습니까?') && deleteProduct({ id })}
-                        onEdit={() => { setEditingProduct(product); setIsProductModalOpen(true); }}
-                      />
-                      <button 
-                        onClick={() => { setEditingProduct(product); setIsProductModalOpen(true); }}
-                        className="hidden lg:block absolute left-[80px] top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-white border border-zinc-200 text-zinc-400 hover:text-zinc-900 px-3 py-1 rounded-full text-[10px] font-bold shadow-sm transition-all"
-                      >
-                        상세수정
-                      </button>
-                    </div>
-                  ))}
-                </SortableContext>
+                {groupedProducts.map((group, gIdx) => (
+                  <div key={gIdx} className="mb-8">
+                    {group.title && (
+                      <div className="flex items-center gap-2 mb-4 px-1 group/header">
+                        <ArrowDownAz size={14} className="text-amber-500" />
+                        <h5 className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">
+                          {group.title}
+                        </h5>
+                        <div className="h-px bg-zinc-100 flex-1 ml-2" />
+                        <div className="flex items-center gap-1 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => handleMoveGroup(group.title!, 'up')}
+                            disabled={gIdx === 0 || isSaving}
+                            className="p-1 text-zinc-400 hover:text-zinc-900 disabled:opacity-20"
+                          >
+                            <ChevronUp size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleMoveGroup(group.title!, 'down')}
+                            disabled={gIdx === groupedProducts.length - 1 || isSaving}
+                            className="p-1 text-zinc-400 hover:text-zinc-900 disabled:opacity-20"
+                          >
+                            <ChevronDown size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <SortableContext 
+                      items={group.items.map(p => p._id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {group.items.map((product) => (
+                        <div key={product._id} className="relative group">
+                          <SortableProductItem 
+                            product={product} 
+                            onUpdate={(id, data) => updateProduct({ id, ...data })}
+                            onDelete={(id) => confirm('삭제하시겠습니까?') && deleteProduct({ id })}
+                            onEdit={() => { setEditingProduct(product); setIsProductModalOpen(true); }}
+                          />
+                          <button 
+                            onClick={() => { setEditingProduct(product); setIsProductModalOpen(true); }}
+                            className="hidden lg:block absolute left-[80px] top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-white border border-zinc-200 text-zinc-400 hover:text-zinc-900 px-3 py-1 rounded-full text-[10px] font-bold shadow-sm transition-all"
+                          >
+                            상세수정
+                          </button>
+                        </div>
+                      ))}
+                    </SortableContext>
+                  </div>
+                ))}
               </DndContext>
               
               {products?.length === 0 && (
@@ -547,6 +749,29 @@ export default function ProductManagement() {
             </div>
             
             <form onSubmit={handleSaveProduct} className="p-6 lg:p-8 space-y-6 overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Brand</label>
+                  <input 
+                    type="text" 
+                    name="brand" 
+                    defaultValue={editingProduct?.brand}
+                    placeholder="예: 삼성, LG"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Category</label>
+                  <input 
+                    type="text" 
+                    name="category" 
+                    defaultValue={editingProduct?.category}
+                    placeholder="예: 에어컨, 세탁기"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Product Name</label>

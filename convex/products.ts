@@ -58,7 +58,7 @@ export const listMainProducts = query({
         .collect();
 
       // Sort by order field
-      products.sort((a, b) => a.order - b.order);
+      products.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
       // If it's a partner-specific category, show ALL products.
       // Otherwise, only show products with showOnMain: true.
@@ -156,7 +156,7 @@ export const listProducts = query({
         .query("products")
         .withIndex("by_groupId", (q) => q.eq("groupId", groupId))
         .collect();
-      return products.sort((a, b) => a.order - b.order);
+      return products.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     }
     return await ctx.db.query("products").withIndex("by_order").collect();
   },
@@ -173,6 +173,8 @@ export const addProduct = mutation({
     showOnMain: v.boolean(),
     order: v.number(),
     originalUrl: v.string(),
+    brand: v.optional(v.string()),
+    category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("products", args);
@@ -191,6 +193,8 @@ export const updateProduct = mutation({
     order: v.optional(v.number()),
     groupId: v.optional(v.id("productGroups")),
     originalUrl: v.optional(v.string()),
+    brand: v.optional(v.string()),
+    category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
@@ -211,6 +215,7 @@ export const reorderProducts = mutation({
     orders: v.array(v.object({ id: v.id("products"), order: v.number() })),
   },
   handler: async (ctx, args) => {
+    console.log(`Reordering ${args.orders.length} products...`);
     for (const item of args.orders) {
       await ctx.db.patch(item.id, { order: item.order });
     }
@@ -220,5 +225,121 @@ export const getGroup = query({
   args: { id: v.id("productGroups") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
+  },
+});
+
+export const syncProducts = mutation({
+  args: {
+    groupId: v.id("productGroups"),
+    products: v.array(v.object({
+      name: v.string(),
+      thumbnail: v.string(),
+      paymentMethods: v.array(v.string()),
+      modelName: v.string(),
+      detailHtml: v.string(),
+      showOnMain: v.boolean(),
+      order: v.number(),
+      originalUrl: v.string(),
+      brand: v.optional(v.string()),
+      category: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const { groupId, products } = args;
+    
+    // Clear existing
+    const existing = await ctx.db
+      .query("products")
+      .withIndex("by_groupId", (q) => q.eq("groupId", groupId))
+      .collect();
+    for (const p of existing) {
+      await ctx.db.delete(p._id);
+    }
+    
+    // Add new
+    for (const p of products) {
+      await ctx.db.insert("products", { ...p, groupId });
+    }
+  },
+});
+
+export const addProducts = mutation({
+  args: {
+    groupId: v.id("productGroups"),
+    products: v.array(v.object({
+      name: v.string(),
+      thumbnail: v.string(),
+      paymentMethods: v.array(v.string()),
+      modelName: v.string(),
+      detailHtml: v.string(),
+      showOnMain: v.boolean(),
+      order: v.number(),
+      originalUrl: v.string(),
+      brand: v.optional(v.string()),
+      category: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const { groupId, products } = args;
+    for (const p of products) {
+      await ctx.db.insert("products", { ...p, groupId });
+    }
+  },
+});
+
+export const autoCategorizeAll = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const products = await ctx.db.query("products").collect();
+    
+    const brandKeywords = [
+      "삼성", "LG", "쿠쿠", "쿠첸", "위니아", "캐리어", "다이슨", "테팔", 
+      "필립스", "드롱기", "네스프레소", "샤오미", "일렉트로룩스", "에이서", "HP", "레노버",
+      "발뮤다", "코웨이", "청호나이스", "SK매직", "경동나비엔"
+    ];
+
+    const categoryMap: { [key: string]: string[] } = {
+      "TV": ["TV", "티비", "텔레비전"],
+      "세탁기/건조기": ["세탁기", "건조기", "워시타워"],
+      "냉장고/김치냉장고": ["냉장고", "김치냉장고", "비스포크 냉장고", "오브제 냉장고"],
+      "에어컨": ["에어컨", "시스템에어컨", "벽걸이 에어컨", "스탠드 에어컨"],
+      "공기청정기": ["공기청정기", "에어퓨리파이어"],
+      "청소기": ["청소기", "로봇청소기", "무선청소기"],
+      "조리기기": ["레인지", "오븐", "인덕션", "전기레인지", "에어프라이어", "밥솥", "전기밥솥"],
+      "생활가전": ["스타일러", "에어드레서", "식기세척기", "정수기", "비데", "가습기", "제습기"],
+      "계절가전": ["온수매트", "전기매트", "선풍기", "히터"],
+      "주방가전": ["믹서기", "커피머신", "토스터", "전기포트"],
+      "컴퓨터/노트북": ["컴퓨터", "노트북", "PC", "태블릿", "아이패드", "갤럭시탭"]
+    };
+
+    let count = 0;
+    for (const product of products) {
+      let brand = product.brand;
+      let category = product.category;
+
+      if (!brand) {
+        for (const bk of brandKeywords) {
+          if (product.name.includes(bk)) {
+            brand = bk;
+            break;
+          }
+        }
+      }
+
+      if (!category) {
+        for (const [cat, keywords] of Object.entries(categoryMap)) {
+          if (keywords.some(k => product.name.includes(k))) {
+            category = cat;
+            break;
+          }
+        }
+      }
+
+      if (brand !== product.brand || category !== product.category) {
+        await ctx.db.patch(product._id, { brand, category });
+        count++;
+      }
+    }
+    return count;
   },
 });

@@ -38,7 +38,7 @@ export const fetchProductsFromUrlV3 = action({
         params.append('actions', 'goods');
         params.append('themes_no', themesNo.toString());
 
-        let resp;
+        let resp: any = null;
         let retries = 3;
         while (retries > 0) {
           try {
@@ -68,9 +68,9 @@ export const fetchProductsFromUrlV3 = action({
           }
         }
         
-        console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
+        console.log(`Lifenuri Resp: status=${resp?.status}, keys=${Object.keys(resp?.data || {}).join(',')}`);
         
-        goods = (resp.data.themeslistrow || []).map((item: any) => ({
+        goods = (resp?.data?.themeslistrow || []).map((item: any) => ({
           g_no: item.goods_code,
           name: item.goods_title,
           thumbnail: item.goods_image_main2,
