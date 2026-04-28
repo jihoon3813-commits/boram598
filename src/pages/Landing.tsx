@@ -561,69 +561,74 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <FadeIn className="mb-16">
             <h2 className="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4">Core Benefits</h2>
-            <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight">수준이 다른 보람의 특권</h3>
+            <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight">수준이 다른 보람상조의 특권</h3>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6 auto-rows-[240px]">
             {/* Benefit 1 (Large) */}
             <FadeIn delay={0.1} className="md:col-span-6 lg:col-span-8 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-10 flex border-t-zinc-800/80 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-transparent" />
-              <img src="https://images.unsplash.com/photo-1556910103-1c02745a872f?auto=format&fit=crop&q=80&w=1000" alt="Home Appliance" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-10" />
+              <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000" alt="Home Appliance" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-50" />
               <div className="relative z-20 flex flex-col justify-between h-full">
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-amber-400">
+                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-amber-400 border border-white/20">
                   <Tv size={28} />
                 </div>
                 <div>
-                  <h4 className="text-3xl font-black mb-3">최고의 브랜드, 즉시 배송</h4>
-                  <p className="text-zinc-400 font-light leading-relaxed max-w-md">삼성, LG 등 메이저 브랜드의 최신 홈 가전을 가입 즉시 원하는 곳으로 안전하게 배송 및 설치해 드립니다.</p>
+                  <h4 className="text-3xl font-black mb-3 text-white">최고의 브랜드, 즉시 배송</h4>
+                  <p className="text-zinc-300 font-light leading-relaxed max-w-md">삼성, LG 등 메이저 브랜드의 최신 홈 가전을 가입 즉시 원하는 곳으로 안전하게 배송 및 설치해 드립니다.</p>
                 </div>
               </div>
             </FadeIn>
 
             {/* Benefit 2 */}
-            <FadeIn delay={0.2} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between">
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white">
+            <FadeIn delay={0.2} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+               <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=600" alt="Refund" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" />
+               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
                   <RefreshCcw size={24} />
                </div>
-               <div>
-                 <h4 className="text-xl font-bold mb-2">100% 전액 환급</h4>
-                 <p className="text-sm text-zinc-400 font-light leading-relaxed">만기 시까지 유지하신 납입금 전액을 한 치의 오차 없이 돌려드립니다.</p>
+               <div className="relative z-20">
+                 <h4 className="text-xl font-bold mb-2 text-white">100% 전액 환급</h4>
+                 <p className="text-sm text-zinc-300 font-light leading-relaxed">만기 시까지 유지하신 납입금 전액을 한 치의 오차 없이 돌려드립니다.</p>
                </div>
             </FadeIn>
 
             {/* Benefit 3 */}
-            <FadeIn delay={0.3} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between">
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white">
+            <FadeIn delay={0.3} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+               <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=600" alt="Resort" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
+               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
                   <Palmtree size={24} />
                </div>
-               <div>
-                 <h4 className="text-xl font-bold mb-2">프리미엄 리조트 멤버십</h4>
-                 <p className="text-sm text-zinc-400 font-light leading-relaxed">전국 럭셔리 호텔 및 리조트를 최대 80% 할인된 회원가로 제공합니다.</p>
+               <div className="relative z-20">
+                 <h4 className="text-xl font-bold mb-2 text-white">프리미엄 리조트 멤버십</h4>
+                 <p className="text-sm text-zinc-300 font-light leading-relaxed">전국 럭셔리 호텔 및 리조트를 최대 80% 할인된 회원가로 제공합니다.</p>
                </div>
             </FadeIn>
 
              {/* Benefit 4 */}
-             <FadeIn delay={0.4} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between">
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-amber-500">
+             <FadeIn delay={0.4} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+               <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600" alt="Life Plan" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" />
+               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-amber-500 relative z-20 border border-white/10">
                   <ArrowRightLeft size={24} />
                </div>
-               <div>
-                 <h4 className="text-xl font-bold mb-2">라이프 플랜 전환</h4>
-                 <p className="text-sm text-zinc-400 font-light leading-relaxed">크루즈, 웨딩, 장례 등 상황에 맞춰 필요한 서비스로 언제든 전환 가능합니다.</p>
+               <div className="relative z-20">
+                 <h4 className="text-xl font-bold mb-2 text-white">라이프 플랜 전환</h4>
+                 <p className="text-sm text-zinc-300 font-light leading-relaxed">크루즈, 웨딩, 장례 등 상황에 맞춰 필요한 서비스로 언제든 전환 가능합니다.</p>
                </div>
             </FadeIn>
 
              {/* Benefit 5 */}
-             <FadeIn delay={0.5} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between overflow-hidden relative">
-               <div className="absolute top-0 right-0 p-6 opacity-5">
-                 <Award size={100} />
-               </div>
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-10">
+             <FadeIn delay={0.5} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between overflow-hidden relative group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+               <img src="https://images.unsplash.com/photo-1533421644341-4347702ec7ee?auto=format&fit=crop&q=80&w=600" alt="Trust" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
+               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
                   <Award size={24} />
                </div>
-               <div className="relative z-10">
-                 <h4 className="text-xl font-bold mb-2">33만 건의 신뢰 증명</h4>
-                 <p className="text-sm text-zinc-400 font-light leading-relaxed">압도적인 누적 행사 건수로 증명되는 대한민국 1등 상조의 자부심.</p>
+               <div className="relative z-20">
+                 <h4 className="text-xl font-bold mb-2 text-white">33만 건의 신뢰 증명</h4>
+                 <p className="text-sm text-zinc-300 font-light leading-relaxed">압도적인 누적 행사 건수로 증명되는 대한민국 1등 상조의 자부심.</p>
                </div>
             </FadeIn>
           </div>
