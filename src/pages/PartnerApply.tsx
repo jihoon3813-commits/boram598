@@ -1,17 +1,75 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Search, ChevronRight, Check } from 'lucide-react';
+import { ShieldCheck, Search, ChevronRight, Check, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
 export default function PartnerApply() {
   const [agreed, setAgreed] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState({
+    companyName: '',
+    ceoName: '',
+    businessNumber: '',
+    zipCode: '',
+    address: '',
+    detailAddress: '',
+    managerName: '',
+    managerPhone: '',
+    loginId: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  // Formatting helpers
+  const formatBusinessNumber = (val: string) => {
+    const raw = val.replace(/[^0-9]/g, '').slice(0, 10);
+    if (raw.length <= 3) return raw;
+    if (raw.length <= 5) return `${raw.slice(0, 3)}-${raw.slice(3)}`;
+    return `${raw.slice(0, 3)}-${raw.slice(3, 5)}-${raw.slice(5)}`;
+  };
+
+  const formatPhone = (val: string) => {
+    const raw = val.replace(/[^0-9]/g, '').slice(0, 11);
+    if (raw.length <= 3) return raw;
+    if (raw.length <= 7) return `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7)}`;
+    return `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7)}`;
+  };
+
+  const handleAddressSearch = () => {
+    if (!window.daum) {
+      alert('주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    new window.daum.Postcode({
+      oncomplete: (data: any) => {
+        let fullAddr = data.roadAddress;
+        let extraAddr = '';
+
+        if (data.addressType === 'R') {
+          if (data.bname !== '') extraAddr += data.bname;
+          if (data.buildingName !== '') extraAddr += (extraAddr !== '' ? `, ${data.buildingName}` : data.buildingName);
+          fullAddr += (extraAddr !== '' ? ` (${extraAddr})` : '');
+        }
+
+        setForm(prev => ({
+          ...prev,
+          zipCode: data.zonecode,
+          address: fullAddr
+        }));
+      }
+    }).open();
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 selection:bg-amber-500/30">
       {/* Header */}
       <header className="bg-white border-b border-zinc-200 py-6">
         <div className="max-w-4xl mx-auto px-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="p-2 hover:bg-zinc-100 rounded-full transition-colors">
+              <ArrowLeft size={24} className="text-zinc-400" />
+            </Link>
+            <Link to="/" className="flex items-center gap-2">
             <img 
               src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
               alt="Logo" 
@@ -65,41 +123,106 @@ export default function PartnerApply() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">회사명 (상호)</label>
-                  <input type="text" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="(주)디엠앤케이" />
+                  <input 
+                    type="text" 
+                    required 
+                    autoComplete="off"
+                    className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                    placeholder="주식회사 회사명" 
+                    value={form.companyName}
+                    onChange={e => setForm({...form, companyName: e.target.value})}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">대표자명</label>
-                  <input type="text" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="홍길동" />
+                  <input 
+                    type="text" 
+                    required 
+                    autoComplete="off"
+                    className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                    placeholder="홍길동" 
+                    value={form.ceoName}
+                    onChange={e => setForm({...form, ceoName: e.target.value})}
+                  />
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm font-bold text-zinc-700 mb-2">사업자등록번호</label>
-                <input type="text" className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="123-45-67890 (- 포함)" />
+                <input 
+                  type="text" 
+                  autoComplete="off"
+                  inputMode="numeric"
+                  className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                  placeholder="123-45-67890" 
+                  value={form.businessNumber}
+                  onChange={e => setForm({...form, businessNumber: formatBusinessNumber(e.target.value)})}
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-zinc-700 mb-2">회사 주소</label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
-                    <input type="text" readOnly className="w-32 bg-zinc-50 border border-zinc-300 rounded-xl px-4 py-3" placeholder="우편번호" />
-                    <button type="button" className="bg-zinc-200 text-zinc-800 px-6 rounded-xl font-bold hover:bg-zinc-300 transition-colors text-sm">
+                    <input 
+                      type="text" 
+                      readOnly 
+                      className="w-32 bg-zinc-50 border border-zinc-300 rounded-xl px-4 py-3" 
+                      placeholder="우편번호" 
+                      value={form.zipCode}
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleAddressSearch}
+                      className="bg-zinc-200 text-zinc-800 px-6 rounded-xl font-bold hover:bg-zinc-300 transition-colors text-sm"
+                    >
                       주소 검색
                     </button>
                   </div>
-                  <input type="text" readOnly className="w-full bg-zinc-50 border border-zinc-300 rounded-xl px-4 py-3" placeholder="기본 주소" />
-                  <input type="text" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="상세 주소를 입력해주세요" />
+                  <input 
+                    type="text" 
+                    readOnly 
+                    className="w-full bg-zinc-50 border border-zinc-300 rounded-xl px-4 py-3" 
+                    placeholder="기본 주소" 
+                    value={form.address}
+                  />
+                  <input 
+                    type="text" 
+                    required 
+                    autoComplete="off"
+                    className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                    placeholder="상세 주소를 입력해주세요" 
+                    value={form.detailAddress}
+                    onChange={e => setForm({...form, detailAddress: e.target.value})}
+                  />
                 </div>
               </div>
 
               <div className="border-t border-zinc-100 pt-6 grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">담당자명</label>
-                  <input type="text" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="담당자 이름" />
+                  <input 
+                    type="text" 
+                    required 
+                    autoComplete="off"
+                    className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                    placeholder="담당자 이름" 
+                    value={form.managerName}
+                    onChange={e => setForm({...form, managerName: e.target.value})}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">담당자 연락처</label>
-                  <input type="tel" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="010-0000-0000 (- 제외 자동입력)" />
+                  <input 
+                    type="tel" 
+                    required 
+                    autoComplete="off"
+                    inputMode="numeric"
+                    className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                    placeholder="010-0000-0000" 
+                    value={form.managerPhone}
+                    onChange={e => setForm({...form, managerPhone: formatPhone(e.target.value)})}
+                  />
                 </div>
               </div>
             </div>
@@ -115,9 +238,16 @@ export default function PartnerApply() {
               <div>
                 <label className="block text-sm font-bold text-zinc-700 mb-2">아이디 (서브도메인 겸용)</label>
                 <div className="flex items-center gap-2">
-                  <span className="text-zinc-500 font-mono hidden sm:inline">https://</span>
-                  <input type="text" required className="flex-1 border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono" placeholder="영문 소문자/숫자 조합" />
-                  <span className="text-zinc-500 font-mono">.boram598.com</span>
+                  <span className="text-zinc-500 font-mono hidden sm:inline">borampeople.vercel.app/</span>
+                  <input 
+                    type="text" 
+                    required 
+                    autoComplete="off"
+                    className="flex-1 border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono" 
+                    placeholder="영문 소문자/숫자 조합" 
+                    value={form.loginId}
+                    onChange={e => setForm({...form, loginId: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '')})}
+                  />
                 </div>
                 <p className="text-xs text-zinc-400 mt-2">* 입력하신 아이디가 파트너님의 분양몰 접속 주소로 사용됩니다.</p>
               </div>
@@ -125,11 +255,45 @@ export default function PartnerApply() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">비밀번호</label>
-                  <input type="password" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="8자 이상 영문/숫자 조합" />
+                  <div className="relative">
+                    <input 
+                      type={showPassword ? "text" : "password"}
+                      required 
+                      autoComplete="new-password"
+                      className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 pr-12" 
+                      placeholder="8자 이상 영문/숫자 조합" 
+                      value={form.password}
+                      onChange={e => setForm({...form, password: e.target.value})}
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2">비밀번호 확인</label>
-                  <input type="password" required className="w-full border border-zinc-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="비밀번호 다시 입력" />
+                  <input 
+                    type="password" 
+                    required 
+                    autoComplete="new-password"
+                    className={`w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      form.confirmPassword && form.password !== form.confirmPassword 
+                        ? 'border-red-500' 
+                        : form.confirmPassword && form.password === form.confirmPassword 
+                          ? 'border-green-500' 
+                          : 'border-zinc-300'
+                    }`} 
+                    placeholder="비밀번호 다시 입력" 
+                    value={form.confirmPassword}
+                    onChange={e => setForm({...form, confirmPassword: e.target.value})}
+                  />
+                  {form.confirmPassword && form.password !== form.confirmPassword && (
+                    <p className="text-[10px] text-red-500 mt-1 ml-1 font-bold">비밀번호가 일치하지 않습니다.</p>
+                  )}
                 </div>
               </div>
             </div>
