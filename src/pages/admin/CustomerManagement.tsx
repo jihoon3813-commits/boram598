@@ -107,6 +107,14 @@ export default function CustomerManagement() {
     pageSize: 50
   });
 
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const removeBatch = useMutation(api.customers.removeBatch);
+
+  // Clear selection on filter change
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [searchParams]);
+
   useEffect(() => {
     if (isPartnerAdmin) {
       try {
@@ -381,6 +389,34 @@ export default function CustomerManagement() {
     }
   };
 
+  const toggleSelect = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length > 0 && selectedIds.length === displayCustomers.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(displayCustomers.map(c => c._id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm(`${selectedIds.length}명의 고객 정보를 영구 삭제하시겠습니까?`)) return;
+    
+    try {
+      await removeBatch({ ids: selectedIds as any });
+      setSelectedIds([]);
+      alert("삭제되었습니다.");
+    } catch (e: any) {
+      alert(`삭제 실패: ${e.message}`);
+    }
+  };
+
   const availableStatuses = (() => {
     const dbStatuses = globalSettings?.statuses ?? [];
     let statuses = dbStatuses.length > 0 ? dbStatuses : DEFAULT_STATUSES;
@@ -404,6 +440,14 @@ export default function CustomerManagement() {
           <p className="text-zinc-500 mt-1 font-medium text-sm lg:text-base">전체 고객의 인입 경로와 진행 상태를 실시간으로 모니터링합니다.</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {selectedIds.length > 0 && !isPartnerAdmin && (
+            <button 
+              onClick={handleDeleteSelected}
+              className="bg-red-50 text-red-600 px-6 py-4 lg:px-8 lg:py-4 rounded-2xl lg:rounded-3xl font-black hover:bg-red-100 transition-all flex items-center justify-center gap-2 border border-red-100 animate-in fade-in slide-in-from-right-4 duration-300"
+            >
+              <Trash2 size={20} /> <span className="whitespace-nowrap">{selectedIds.length}명 삭제</span>
+            </button>
+          )}
           <button 
             onClick={() => setIsRegModalOpen(true)}
             className="bg-amber-500 text-zinc-950 px-6 py-4 lg:px-8 lg:py-4 rounded-2xl lg:rounded-3xl font-black shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
@@ -552,6 +596,16 @@ export default function CustomerManagement() {
           <table className="w-full text-left text-sm whitespace-nowrap min-w-[1000px]">
             <thead className="bg-zinc-50 text-zinc-400 font-bold border-b border-zinc-100 uppercase tracking-widest text-[10px]">
               <tr>
+                {!isPartnerAdmin && (
+                  <th className="py-5 px-8 w-12">
+                    <input 
+                      type="checkbox" 
+                      className="w-5 h-5 rounded-lg border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
+                      checked={selectedIds.length > 0 && selectedIds.length === displayCustomers.length}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                )}
                 <th className="py-5 px-8">No.</th>
                 <th className="py-5 px-8 relative">
                   등록일
@@ -572,7 +626,17 @@ export default function CustomerManagement() {
               {displayCustomers.slice(0, searchParams.pageSize).map((customer, i) => {
                 const label = getLabelInfo(customer);
                 return (
-                <tr key={customer._id} className="group hover:bg-zinc-50 cursor-pointer transition-colors relative" onClick={() => openModal(customer)}>
+                <tr key={customer._id} className={`group hover:bg-zinc-50 cursor-pointer transition-colors relative ${selectedIds.includes(customer._id) ? 'bg-amber-50/50' : ''}`} onClick={() => openModal(customer)}>
+                  {!isPartnerAdmin && (
+                    <td className="py-5 px-8 w-12" onClick={e => e.stopPropagation()}>
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 rounded-lg border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
+                        checked={selectedIds.includes(customer._id)}
+                        onChange={(e) => toggleSelect(customer._id, e as any)}
+                      />
+                    </td>
+                  )}
                   <td className="py-5 px-8 text-zinc-400 font-medium relative">
                     {label && <div className={`absolute left-0 top-1 bottom-1 w-1 ${label.color} rounded-r-full`} />}
                     {displayCustomers.length - i}

@@ -141,3 +141,12 @@ export const updateCustomerRecord = mutation({
     }
   },
 });
+
+export const removeBatch = mutation({
+  args: { ids: v.array(v.id("customers")) },
+  handler: async (ctx, args) => {
+    for (const id of args.ids) {
+      await ctx.db.delete(id);
+    }
+  },
+});
