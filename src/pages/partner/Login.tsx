@@ -56,12 +56,12 @@ export default function PartnerLogin() {
         animate={{ opacity: 1, y: 0 }}
         className="relative w-full max-w-md"
       >
-        <div className="text-center mb-10">
-          <Link to="/" className="inline-block mb-8">
+        <div className="flex flex-col items-center mb-10 text-center">
+          <Link to="/" className="mb-8">
             <img 
               src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
               alt="Logo" 
-              className="h-12 w-auto brightness-0 invert mx-auto" 
+              className="h-12 w-auto brightness-0 invert" 
             />
           </Link>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold mb-4">
