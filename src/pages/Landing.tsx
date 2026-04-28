@@ -373,7 +373,7 @@ export default function Landing() {
             <FadeIn>
               <h2 className="text-xs font-bold text-amber-600 tracking-widest uppercase mb-4">Value Proposition</h2>
               <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
-                소비할 것인가, <br className="md:hidden" /> 저축할 것인가?
+                소비할 것인가, <br className="md:hidden" /> 돌려받을 것인가?
               </h3>
               <p className="mt-6 text-zinc-500 text-lg flex items-center justify-center gap-2">
                 같은 가전을 들여도 <span className="font-bold text-zinc-800 border-b border-zinc-800">결과는 완전히 다릅니다.</span>
