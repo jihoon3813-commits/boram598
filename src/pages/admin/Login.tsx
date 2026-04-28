@@ -2,14 +2,31 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, ChevronRight, ArrowLeft } from 'lucide-react';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 export default function AdminLogin() {
   const [formData, setFormData] = useState({ id: '', password: '' });
   const navigate = useNavigate();
+  const globalSettings = useQuery(api.settings.get);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/admin');
+    
+    if (!globalSettings) {
+      alert('설정 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+
+    const correctId = 'admin';
+    const correctPassword = globalSettings.adminPassword || 'admin1234';
+
+    if (formData.id === correctId && formData.password === correctPassword) {
+      localStorage.setItem('adminToken', 'true');
+      navigate('/admin');
+    } else {
+      alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+    }
   };
 
   return (

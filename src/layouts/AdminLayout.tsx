@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   Users, 
@@ -19,6 +19,13 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('adminToken') === 'true';
+    if (!isAdmin) {
+      navigate('/admin/login');
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
