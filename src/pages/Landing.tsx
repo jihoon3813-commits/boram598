@@ -332,13 +332,13 @@ export default function Landing() {
             <FadeIn delay={0.1}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm font-bold letter tracking-widest mb-8 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                SAMSUNG & LG 프리미엄 가전 한정 혜택
+                삼성 & LG 프리미엄 가전 한정 혜택
               </div>
             </FadeIn>
             
             <FadeIn delay={0.3}>
               <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-[1.2] md:leading-[1.15] mb-8 tracking-tight">
-                최신 가전은 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 whitespace-nowrap">오늘 받고</span>, <br className="hidden md:block" />
+                최신 가전은 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 whitespace-nowrap">먼저 받고</span>, <br className="hidden md:block" />
                 만기 시 <span className="relative inline-block">
                   <span className="relative z-10">100% 돌려받는</span>
                   <div className="absolute bottom-1 md:bottom-3 left-0 w-full h-3 md:h-5 bg-amber-500/30 -z-10" />
@@ -349,7 +349,7 @@ export default function Landing() {
 
             <FadeIn delay={0.5}>
               <p className="text-zinc-300 text-lg md:text-2xl font-light mb-12 leading-relaxed max-w-2xl">
-                월 29,900원의 선이자 혜택으로 <br className="hidden md:block" />우리 집 공간의 품격을 올리고 납입금 전액은 자산으로 남깁니다.
+                월 29,900원의 부담없는 금액으로 <br className="hidden md:block" />우리 집 공간의 품격을 올리고 납입금 전액은 자산으로 남깁니다.
               </p>
             </FadeIn>
 
@@ -358,12 +358,9 @@ export default function Landing() {
                 onClick={() => setIsModalOpen(true)}
                 className="w-full sm:w-auto px-10 py-5 bg-white text-zinc-950 rounded-full text-lg font-bold transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group"
               >
-                0원으로 프리미엄 가전 신청
+                늦기전에 프리미엄 가전 신청
                 <ChevronRight className="group-hover:translate-x-1 transition-transform" />
               </button>
-              <p className="text-zinc-500 text-sm font-medium tracking-wide">
-                누적 신청 <span className="text-amber-400 font-bold">1,248</span>건 돌파
-              </p>
             </FadeIn>
           </div>
         </div>
