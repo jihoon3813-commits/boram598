@@ -16,10 +16,10 @@ export const fetchProductsFromUrlV3 = action({
 
     if (!group) throw new Error("Group not found");
 
-    const url = args.url;
+    const urlObj = new URL(url);
     const isLifenuri = url.includes("lifenuri.com");
     const isBoram = url.includes("xn--299ar6vqrd.com") || url.includes("보람상조.com") || url.includes("bilrigo.com");
-    const siteBaseUrl = isLifenuri ? "https://boram.lifenuri.com" : (isBoram ? "https://xn--299ar6vqrd.com" : "");
+    const siteBaseUrl = isLifenuri ? "https://boram.lifenuri.com" : urlObj.origin;
 
     let goods: any[] = [];
 
@@ -47,7 +47,6 @@ export const fetchProductsFromUrlV3 = action({
       }));
     } else if (isBoram) {
       // Bilrigo API for Boram 598
-      const urlObj = new URL(url);
       const ca_id = urlObj.searchParams.get("ca_id") || "035";
       const seller = urlObj.searchParams.get("filter_seller[]") || urlObj.searchParams.get("filter_seller%5B%5D") || "AP-100054";
       const account = urlObj.searchParams.get("filter_account[]") || urlObj.searchParams.get("filter_account%5B%5D") || "1";
@@ -58,13 +57,17 @@ export const fetchProductsFromUrlV3 = action({
       try {
         resp = await axios.get(apiUrl, {
           headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
             "X-Requested-With": "XMLHttpRequest",
-            "Referer": url
-          }
+            "Referer": url,
+            "Origin": siteBaseUrl
+          },
+          timeout: 10000
         });
       } catch (e: any) {
-        throw new Error(`API Fetch Error: ${e.message} | URL: ${apiUrl}`);
+        const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
+        throw new Error(`API Fetch Error: ${e.message} | URL: ${apiUrl} | Data: ${errorData}`);
       }
       
       const models = resp.data.Lists || [];
