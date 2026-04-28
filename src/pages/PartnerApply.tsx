@@ -317,7 +317,7 @@ export default function PartnerApply() {
               <div className="flex-1">
                 <h3 className="font-bold text-zinc-900 group-hover:text-amber-600 transition-colors">개인정보 수집 및 파트너 이용약관 동의 (필수)</h3>
                 <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
-                  (주)디엠앤케이는 파트너 승인 및 분양몰 개설을 위해 위와 같이 최소한의 개인정보를 수집합니다. 수집된 정보는 파트너 계약 해지 시까지 안전하게 보관됩니다.
+                  (주)라이프앤조이는 파트너 승인 및 분양몰 개설을 위해 위와 같이 최소한의 개인정보를 수집합니다. 수집된 정보는 파트너 계약 해지 시까지 안전하게 보관됩니다.
                 </p>
               </div>
             </label>
