@@ -25,7 +25,7 @@ export default function PartnerLayout() {
   }, []);
 
   const menuItems = [
-    { name: '대시보드', path: '/partner/dashboard', icon: <LayoutDashboard size={20} /> },
+    // { name: '대시보드', path: '/partner/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: '고객관리', path: '/partner/customers', icon: <Users size={20} /> },
     { name: '설정', path: '/partner/settings', icon: <Settings size={20} /> },
   ];
@@ -116,7 +116,7 @@ export default function PartnerLayout() {
               <Menu size={24} />
             </button>
             <div className="font-black text-lg text-zinc-900 truncate">
-              {menuItems.find(m => location.pathname.startsWith(m.path))?.name || '대시보드'}
+              {menuItems.find(m => location.pathname.startsWith(m.path))?.name || '관리 시스템'}
             </div>
           </div>
           <div className="flex items-center gap-2 lg:gap-4">

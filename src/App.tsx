@@ -93,7 +93,7 @@ export default function App() {
 
         {/* Partner Admin */}
         <Route path="/partner" element={<PartnerLayout />}>
-          <Route index element={<ErrorBoundary><PartnerDashboard /></ErrorBoundary>} />
+          <Route index element={<ErrorBoundary><CustomerManagement /></ErrorBoundary>} />
           <Route path="dashboard" element={<ErrorBoundary><PartnerDashboard /></ErrorBoundary>} />
           <Route path="customers" element={<ErrorBoundary><CustomerManagement /></ErrorBoundary>} />
           <Route path="settings" element={<ErrorBoundary><PartnerSettings /></ErrorBoundary>} />
