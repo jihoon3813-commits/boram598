@@ -296,16 +296,21 @@ export default function Landing() {
     if (!formData.paymentType) { alert('결제 방식을 선택해주세요.'); return; }
     setSubmitting(true);
     try {
+      const selectedProductObj = allProductsList.find((p: any) => p.name === formData.product);
+      const selectedCategoryObj = mainProducts?.find((g: any) => g.products.some((p: any) => p._id === selectedProductObj?._id));
+
       await addCustomer({
         name: formData.name.trim(),
         phone: formData.phone,
         status: '상담대기',
-        productId: formData.product,
+        categoryId: selectedCategoryObj?._id,
+        categoryName: selectedCategoryObj?.name,
+        productId: selectedProductObj?._id || formData.product,
         productName: formData.product,
         paymentType: formData.paymentType,
         partnerId: activePartner?._id,
         partnerName: activePartner?.name || '본사직영',
-        partnerLoginId: activePartner?.loginId || 'admin', // Ensure login ID is recorded for display
+        partnerLoginId: activePartner?.loginId || 'admin',
       });
       alert('상담 신청이 완료되었습니다! 빠른 시일 내 연락드리겠습니다.');
       setIsModalOpen(false);

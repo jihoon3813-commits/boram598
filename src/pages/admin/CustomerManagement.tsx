@@ -1098,22 +1098,7 @@ function CustomerDetailModal({
                       />
                     </div>
                   ))}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-zinc-400 uppercase flex items-center gap-1">
-                      <CreditCard size={16} /> 결제 방식 (렌탈/48페이)
-                    </label>
-                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
-                      {['60개월 렌탈', '신한 48페이'].map(pt => (
-                        <button 
-                          key={pt}
-                          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${localData.paymentType === pt ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:bg-zinc-100'}`}
-                          onClick={() => setLocalData({...localData, paymentType: pt})}
-                        >
-                          {pt}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase flex items-center gap-1">
                       <CreditCard size={16} /> 납입방법
@@ -1279,6 +1264,22 @@ function CustomerDetailModal({
                         <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase flex items-center gap-1">
+                      <CreditCard size={16} /> 결제 방식 (렌탈/48페이)
+                    </label>
+                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
+                      {['60개월 렌탈', '신한 48페이'].map(pt => (
+                        <button 
+                          key={pt}
+                          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${localData.paymentType === pt ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:bg-zinc-100'}`}
+                          onClick={() => setLocalData({...localData, paymentType: pt})}
+                        >
+                          {pt}
+                        </button>
+                      ))}
+                    </div>
                   </div>
               </section>
 
