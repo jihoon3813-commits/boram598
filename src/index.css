@@ -8,3 +8,67 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Product detail HTML rendering */
+.product-detail-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+
+.product-detail-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin: 1rem 0;
+}
+
+.product-detail-content th,
+.product-detail-content td {
+  border: 1px solid #e4e4e7;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.product-detail-content th {
+  background-color: #f4f4f5;
+  font-weight: 700;
+}
+
+.product-detail-content .lifenuri-detail img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.product-detail-content .lifenuri-detail * {
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.product-detail-content .lifenuri-detail center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
