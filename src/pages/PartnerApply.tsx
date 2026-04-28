@@ -70,12 +70,13 @@ export default function PartnerApply() {
               <ArrowLeft size={24} className="text-zinc-400" />
             </Link>
             <Link to="/" className="flex items-center gap-2">
-            <img 
-              src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
-              alt="Logo" 
-              className="h-12 w-auto" 
-            />
-          </Link>
+              <img 
+                src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
+                alt="Logo" 
+                className="h-12 w-auto" 
+              />
+            </Link>
+          </div>
           <div className="text-sm font-bold text-zinc-500">
             공식 파트너 신청
           </div>
