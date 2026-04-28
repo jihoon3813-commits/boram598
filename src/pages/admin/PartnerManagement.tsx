@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square, Trash2, Eye, EyeOff, FileDown } from 'lucide-react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
@@ -137,8 +137,42 @@ export default function PartnerManagement() {
   }, [partners, searchQuery, filterStatus]);
 
   const closeModal = () => {
-    setIsModalOpen(false);
     setSelectedPartner(null);
+  };
+
+  const handleDownloadExcel = () => {
+    if (!filteredPartners || filteredPartners.length === 0) {
+      alert("다운로드할 데이터가 없습니다.");
+      return;
+    }
+
+    const headers = ["아이디", "파트너명", "담당자", "연락처", "상태", "서브도메인", "등록일"];
+    const rows = filteredPartners.map(p => [
+      p.loginId,
+      p.name,
+      p.managerName,
+      p.managerPhone,
+      p.status === 'active' ? '정상' : p.status === 'pending' ? '승인대기' : '정지',
+      p.subdomain || p.loginId,
+      new Date(p._creationTime).toLocaleDateString()
+    ]);
+
+    const csvContent = "\uFEFF" + [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().split('T')[0];
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `파트너현황_${date}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -171,9 +205,17 @@ export default function PartnerManagement() {
           </select>
         </div>
         
-        <button className="flex items-center justify-center gap-2 bg-zinc-900 text-white px-6 py-3.5 rounded-md text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95" onClick={() => openModal(null)}>
-          <Plus size={18} /> 파트너 등록
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleDownloadExcel}
+            className="flex items-center justify-center gap-2 bg-white border border-zinc-200 text-zinc-600 px-6 py-3.5 rounded-md text-sm font-black hover:bg-zinc-50 transition-all shadow-sm active:scale-95"
+          >
+            <FileDown size={18} /> 엑셀 다운로드
+          </button>
+          <button className="flex items-center justify-center gap-2 bg-zinc-900 text-white px-6 py-3.5 rounded-md text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95" onClick={() => openModal(null)}>
+            <Plus size={18} /> 파트너 등록
+          </button>
+        </div>
       </div>
 
       {/* Table */}

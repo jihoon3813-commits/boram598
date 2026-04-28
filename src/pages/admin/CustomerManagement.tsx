@@ -426,6 +426,53 @@ export default function CustomerManagement() {
     return statuses.filter((s: any) => s.isActive && s.allowPartnerEdit);
   })();
 
+  const handleDownloadExcel = () => {
+    if (displayCustomers.length === 0) {
+      alert("다운로드할 데이터가 없습니다.");
+      return;
+    }
+
+    const headers = [
+      "등록일", "파트너사", "파트너ID", "고객명", "연락처", "생년월일", "성별", 
+      "카테고리", "제품명", "결제방식", "상태", "주소", "상세주소", "선호통화시간", "메모"
+    ];
+
+    const rows = displayCustomers.map(c => [
+      c.regDate || "",
+      c.partnerName || "본사직영",
+      c.partnerLoginId || "admin",
+      c.name || "",
+      c.phone || "",
+      c.dob || "",
+      c.gender || "",
+      c.categoryName || "",
+      c.productName || "",
+      c.paymentType || "",
+      c.status || "",
+      (c.address || "").replace(/,/g, " "),
+      (c.detailAddress || "").replace(/,/g, " "),
+      c.preferredTime || "",
+      (c.note || "").replace(/[\n\r,]/g, " ")
+    ]);
+
+    const csvContent = "\uFEFF" + [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().split('T')[0];
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `고객현황_${date}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 pb-20">
       {/* Header with Search & Register */}
@@ -460,7 +507,10 @@ export default function CustomerManagement() {
           >
             <Plus size={20} /> <span className="whitespace-nowrap">고객 직접 등록</span>
           </button>
-          <button className="bg-white border border-zinc-200 text-zinc-600 px-6 py-4 lg:px-8 lg:py-4 rounded-2xl lg:rounded-3xl font-black hover:bg-zinc-50 transition-all flex items-center justify-center gap-2">
+          <button 
+            onClick={handleDownloadExcel}
+            className="bg-white border border-zinc-200 text-zinc-600 px-6 py-4 lg:px-8 lg:py-4 rounded-lg lg:rounded-lg font-black hover:bg-zinc-50 transition-all flex items-center justify-center gap-2"
+          >
             <FileDown size={20} /> <span className="whitespace-nowrap">엑셀 다운로드</span>
           </button>
         </div>
