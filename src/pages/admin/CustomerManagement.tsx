@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { 
   Search, Plus, FileDown, MoreHorizontal, X, 
@@ -121,6 +121,20 @@ export default function CustomerManagement() {
       }
     }
   }, [isPartnerAdmin]);
+
+  const selectedRegProductObj = allProducts?.find(p => p._id === regForm.productId);
+  const availableRegMethods = useMemo(() => {
+    if (!regForm.productId) return ['60개월 렌탈', '신한 48페이'];
+    return selectedRegProductObj?.paymentMethods || ['60개월 렌탈', '신한 48페이'];
+  }, [regForm.productId, selectedRegProductObj]);
+
+  useEffect(() => {
+    if (availableRegMethods.length === 1 && regForm.paymentType !== availableRegMethods[0]) {
+      setRegForm(prev => ({ ...prev, paymentType: availableRegMethods[0] }));
+    } else if (regForm.paymentType && !availableRegMethods.includes(regForm.paymentType)) {
+      setRegForm(prev => ({ ...prev, paymentType: '' }));
+    }
+  }, [availableRegMethods]);
 
   // Handle Address Search
   const handleAddressSearch = (onComplete: (addr: string) => void) => {
@@ -796,7 +810,7 @@ export default function CustomerManagement() {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">결제 방식 *</label>
                     <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
-                      {['60개월 렌탈', '신한 48페이'].map(pt => (
+                      {['60개월 렌탈', '신한 48페이'].filter(pt => availableRegMethods.includes(pt)).map(pt => (
                         <button 
                           key={pt}
                           className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${regForm.paymentType === pt ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
