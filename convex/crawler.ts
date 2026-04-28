@@ -27,6 +27,7 @@ export const fetchProductsFromUrlV3 = action({
       if (isLifenuri) {
         const parts = url.split('/');
         const themesNo = parseInt(parts[parts.length - 1]) - 1;
+        console.log(`Lifenuri Fetch: themesNo=${themesNo}, url=${url}`);
         const resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
           `actions=goods&themes_no=${themesNo}`, 
           {
@@ -38,6 +39,7 @@ export const fetchProductsFromUrlV3 = action({
             }
           }
         );
+        console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
         goods = (resp.data.themeslistrow || []).map((item: any) => ({
           g_no: item.goods_code,
           name: item.goods_title,
