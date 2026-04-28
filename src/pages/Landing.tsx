@@ -531,13 +531,13 @@ export default function Landing() {
                 <div className="flex justify-between relative">
                   <div className="w-[30%]">
                     <p className="font-bold text-amber-600">1~60회 (5년)</p>
-                    <p className="text-sm text-zinc-500 mt-1">가전제품 부금 납입</p>
+                    <p className="text-sm text-zinc-500 mt-1">가전+상조 부금 납입</p>
                   </div>
                   <div className="w-[70%] pl-6 border-l border-zinc-200">
                     <p className="font-bold text-zinc-900">61~200회 (만기)</p>
                     <p className="text-sm text-zinc-500 mt-1">상조 부금 납입 및 자산화</p>
                   </div>
-                  <div className="absolute right-0 top-0 bg-zinc-900 text-white text-xs font-bold px-4 py-2 rounded-xl -mt-4 shadow-lg flex items-center gap-2">
+                  <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-xl -mt-4 shadow-lg shadow-amber-500/30 flex items-center gap-2">
                     <RefreshCcw size={14} /> 100% 환급 달성
                   </div>
                 </div>
