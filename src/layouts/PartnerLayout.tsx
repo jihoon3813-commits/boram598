@@ -99,12 +99,7 @@ export default function PartnerLayout() {
           </ul>
         </nav>
         <div className="p-4 border-t border-zinc-700">
-           {partnerInfo && (
-             <Link to={`/${partnerInfo.loginId}`} target="_blank" className="flex items-center gap-3 px-3 py-2 w-full text-amber-400 hover:text-amber-300 transition-colors text-sm font-bold mb-2">
-               <ExternalLink size={18} />
-               <span>분양몰 바로가기</span>
-             </Link>
-           )}
+
           <button 
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2 w-full text-zinc-400 hover:text-white transition-colors"
@@ -136,8 +131,8 @@ export default function PartnerLayout() {
               <span className="hidden lg:inline text-sm font-bold">새로고침</span>
             </button>
             <Link to={partnerInfo ? `/${partnerInfo.loginId}` : "/"} target="_blank" className="px-3 py-2 lg:px-4 lg:py-1.5 rounded-md bg-zinc-900 text-white hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-sm">
-              <Home size={18} className="lg:w-4 lg:h-4" />
-              <span className="hidden lg:inline text-sm font-bold">홈페이지</span>
+              <ExternalLink size={18} className="lg:w-4 lg:h-4" />
+              <span className="hidden lg:inline text-sm font-bold">분양몰 바로가기</span>
             </Link>
           </div>
         </header>
