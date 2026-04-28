@@ -155,10 +155,13 @@ export default function CustomerManagement() {
 
   // Filter products based on selected category and visibility
   const filteredCategories = productGroups?.filter(g => {
+    // If not showing on main, hide from selection unless it's already selected
+    if (!g.showOnMain) return false;
+
     if (isPartnerAdmin && partnerInfo?.visibleProductGroupIds) {
       return partnerInfo.visibleProductGroupIds.includes(g._id);
     }
-    // HQ can see all
+    // HQ can see all exposed categories
     return true;
   }) || [];
 
@@ -1228,7 +1231,17 @@ function CustomerDetailModal({
                       }}
                     >
                       <option value="">카테고리 선택</option>
-                      {productGroups?.map(g => (
+                      {productGroups?.filter(g => {
+                        // Current selection should always be visible
+                        if (g._id === localData.categoryId) return true;
+                        // Otherwise, check exposure settings
+                        if (!g.showOnMain) return false;
+                        // For partners, check their assigned visibility
+                        if (isPartnerAdmin && partnerInfo?.visibleProductGroupIds) {
+                          return partnerInfo.visibleProductGroupIds.includes(g._id);
+                        }
+                        return true;
+                      }).map(g => (
                         <option key={g._id} value={g._id}>{g.name}</option>
                       ))}
                     </select>
