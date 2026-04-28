@@ -137,6 +137,7 @@ export default function PartnerManagement() {
   }, [partners, searchQuery, filterStatus]);
 
   const closeModal = () => {
+    setIsModalOpen(false);
     setSelectedPartner(null);
   };
 

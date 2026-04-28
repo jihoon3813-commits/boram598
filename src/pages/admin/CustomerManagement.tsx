@@ -155,18 +155,16 @@ export default function CustomerManagement() {
 
   // Filter products based on selected category and visibility
   const filteredCategories = productGroups?.filter(g => {
-    // If not showing on main, hide from selection unless it's already selected
-    if (!g.showOnMain) return false;
-
     if (isPartnerAdmin) {
       const visibleIds = partnerInfo?.visibleProductGroupIds || [];
-      // If none selected, all are visible. If some selected, only those are visible.
+      // If partner has specific assignments, prioritize them regardless of showOnMain
       if (visibleIds.length > 0) {
         return visibleIds.includes(g._id);
       }
     }
-    // HQ can see all exposed categories, and partners with no restriction see all exposed.
-    return true;
+    
+    // Fallback: If no partner assignments or HQ Admin, honor the global exposure flag
+    return g.showOnMain;
   }) || [];
 
   const filteredProducts = allProducts?.filter(p => p.groupId === regForm.categoryId) || [];
@@ -1238,17 +1236,17 @@ function CustomerDetailModal({
                       {productGroups?.filter(g => {
                         // Current selection should always be visible
                         if (g._id === localData.categoryId) return true;
-                        // Otherwise, check exposure settings
-                        if (!g.showOnMain) return false;
                         
-                        // For partners, check their assigned visibility
+                        // For partners, prioritize their assigned visibility
                         if (isPartnerAdmin) {
                           const visibleIds = partnerInfo?.visibleProductGroupIds || [];
                           if (visibleIds.length > 0) {
                             return visibleIds.includes(g._id);
                           }
                         }
-                        return true;
+
+                        // Fallback: honor global exposure flag
+                        return g.showOnMain;
                       }).map(g => (
                         <option key={g._id} value={g._id}>{g.name}</option>
                       ))}
