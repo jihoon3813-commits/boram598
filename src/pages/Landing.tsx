@@ -246,14 +246,16 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
 
 export default function Landing() {
   const { partnerId } = useParams();
+  const [searchParams] = useSearchParams();
+  const partnerName = partnerId || searchParams.get('partner');
   const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   
-  const activePartner = useQuery(api.partners.getByLoginId, partnerId ? { loginId: partnerId } : "skip");
-  const mainProducts = useQuery(api.products.listMainProducts, partnerId ? (activePartner ? { partnerId: activePartner._id } : "skip") : {});
+  const activePartner = useQuery(api.partners.getByLoginId, partnerName ? { loginId: partnerName } : "skip");
+  const mainProducts = useQuery(api.products.listMainProducts, partnerName ? (activePartner ? { partnerId: activePartner._id } : "skip") : {});
   const globalSettings = useQuery(api.settings.get);
   const addCustomer = useMutation(api.customers.add);
 
