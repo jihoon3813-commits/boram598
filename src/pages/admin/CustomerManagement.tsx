@@ -158,10 +158,14 @@ export default function CustomerManagement() {
     // If not showing on main, hide from selection unless it's already selected
     if (!g.showOnMain) return false;
 
-    if (isPartnerAdmin && partnerInfo?.visibleProductGroupIds) {
-      return partnerInfo.visibleProductGroupIds.includes(g._id);
+    if (isPartnerAdmin) {
+      const visibleIds = partnerInfo?.visibleProductGroupIds || [];
+      // If none selected, all are visible. If some selected, only those are visible.
+      if (visibleIds.length > 0) {
+        return visibleIds.includes(g._id);
+      }
     }
-    // HQ can see all exposed categories
+    // HQ can see all exposed categories, and partners with no restriction see all exposed.
     return true;
   }) || [];
 
@@ -1236,9 +1240,13 @@ function CustomerDetailModal({
                         if (g._id === localData.categoryId) return true;
                         // Otherwise, check exposure settings
                         if (!g.showOnMain) return false;
+                        
                         // For partners, check their assigned visibility
-                        if (isPartnerAdmin && partnerInfo?.visibleProductGroupIds) {
-                          return partnerInfo.visibleProductGroupIds.includes(g._id);
+                        if (isPartnerAdmin) {
+                          const visibleIds = partnerInfo?.visibleProductGroupIds || [];
+                          if (visibleIds.length > 0) {
+                            return visibleIds.includes(g._id);
+                          }
                         }
                         return true;
                       }).map(g => (
