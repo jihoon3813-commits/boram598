@@ -152,6 +152,18 @@ export default function ProductManagement() {
 
   const [isFetching, setIsFetching] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(true);
+  const [modalPaymentMethods, setModalPaymentMethods] = useState<string[]>(['60개월 렌탈', '신한 48페이']);
+
+  useEffect(() => {
+    if (isProductModalOpen) {
+      if (editingProduct) {
+        setModalPaymentMethods(editingProduct.paymentMethods || []);
+      } else {
+        setModalPaymentMethods(['60개월 렌탈', '신한 48페이']);
+      }
+    }
+  }, [isProductModalOpen, editingProduct]);
+
   const fetchProducts = useAction(api.crawler.fetchProductsFromUrlV3);
   
   // DND Sensors
@@ -200,8 +212,7 @@ export default function ProductManagement() {
     if (!selectedGroupId) return;
 
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const methodsStr = formData.get('paymentMethods') as string;
-    const paymentMethods = methodsStr.split(',').map(s => s.trim()).filter(Boolean);
+    const paymentMethods = modalPaymentMethods;
 
     const data: any = {
       groupId: selectedGroupId,
@@ -555,13 +566,28 @@ export default function ProductManagement() {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Payment Methods</label>
-                <input 
-                  type="text" 
-                  name="paymentMethods" 
-                  required 
-                  defaultValue={editingProduct?.paymentMethods?.join(', ') || '60개월 렌탈, 신한 48페이'}
-                  className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm"
-                />
+                <div className="flex gap-2">
+                  {['60개월 렌탈', '신한 48페이'].map(m => (
+                    <button 
+                      key={m}
+                      type="button"
+                      onClick={() => {
+                        if (modalPaymentMethods.includes(m)) {
+                          setModalPaymentMethods(modalPaymentMethods.filter(item => item !== m));
+                        } else {
+                          setModalPaymentMethods([...modalPaymentMethods, m]);
+                        }
+                      }}
+                      className={`flex-1 py-3.5 rounded-2xl text-sm font-black transition-all border ${
+                        modalPaymentMethods.includes(m)
+                          ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg'
+                          : 'bg-zinc-50 text-zinc-400 border-zinc-200 hover:bg-zinc-100'
+                      }`}
+                    >
+                      {m}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">
