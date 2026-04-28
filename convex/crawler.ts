@@ -39,25 +39,36 @@ export const fetchProductsFromUrlV3 = action({
         params.append('themes_no', themesNo.toString());
 
         let resp;
-        try {
-          resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
-            params.toString(), 
-            {
-              headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "X-Requested-With": "XMLHttpRequest",
-                "Referer": url,
-                "Origin": siteBaseUrl
-              },
-              timeout: 30000
+        let retries = 3;
+        while (retries > 0) {
+          try {
+            resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
+              params.toString(), 
+              {
+                headers: {
+                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+                  "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                  "Referer": url,
+                  "Origin": siteBaseUrl,
+                  "Accept": "application/json, text/plain, */*",
+                  "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+                },
+                timeout: 30000
+              }
+            );
+            break;
+          } catch (e: any) {
+            retries--;
+            if (retries === 0) {
+              const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
+              throw new Error(`Lifenuri API Error (Final): ${e.message} | Data: ${errorData}`);
             }
-          );
-          console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
-        } catch (e: any) {
-          const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
-          throw new Error(`Lifenuri API Error: ${e.message} | Data: ${errorData}`);
+            console.log(`Lifenuri Retry: ${retries} left. Error: ${e.message}`);
+            await new Promise(r => setTimeout(r, 2000));
+          }
         }
+        
+        console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
         
         goods = (resp.data.themeslistrow || []).map((item: any) => ({
           g_no: item.goods_code,
