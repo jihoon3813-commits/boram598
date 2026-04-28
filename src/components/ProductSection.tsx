@@ -104,10 +104,17 @@ function ProductCatalogModal({
   const [activeTab, setActiveTab] = useState(initialGroupId || groups[0]?.group?._id || '');
   const [detailProduct, setDetailProduct] = useState<any>(null);
   const tabRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialGroupId) setActiveTab(initialGroupId);
   }, [initialGroupId]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [activeTab]);
 
   const activeGroupData = groups.find((g) => g.group._id === activeTab);
 
@@ -166,7 +173,7 @@ function ProductCatalogModal({
         </div>
 
         {/* Product Grid */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
             {activeGroupData?.products.map((product: any) => (
               <div
