@@ -4,7 +4,7 @@ import {
   Search, Plus, FileDown, MoreHorizontal, X, 
   Copy, Phone, MapPin, Calendar, CreditCard, 
   Clock, User, Package, History, CheckCircle2,
-  ChevronDown, Trash2, Save, Send, RefreshCw
+  ChevronDown, Trash2, Save, Send, RefreshCw, CheckSquare
 } from 'lucide-react';
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -108,6 +108,7 @@ export default function CustomerManagement() {
   });
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
   const removeBatch = useMutation(api.customers.removeBatch);
 
   // Clear selection on filter change
@@ -440,12 +441,23 @@ export default function CustomerManagement() {
           <p className="text-zinc-500 mt-1 font-medium text-sm lg:text-base">전체 고객의 인입 경로와 진행 상태를 실시간으로 모니터링합니다.</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {selectedIds.length > 0 && !isPartnerAdmin && (
+          {isSelectionMode && selectedIds.length > 0 && !isPartnerAdmin && (
             <button 
               onClick={handleDeleteSelected}
               className="bg-red-50 text-red-600 px-6 py-4 lg:px-8 lg:py-4 rounded-2xl lg:rounded-3xl font-black hover:bg-red-100 transition-all flex items-center justify-center gap-2 border border-red-100 animate-in fade-in slide-in-from-right-4 duration-300"
             >
               <Trash2 size={20} /> <span className="whitespace-nowrap">{selectedIds.length}명 삭제</span>
+            </button>
+          )}
+          {!isPartnerAdmin && (
+            <button 
+              onClick={() => {
+                setIsSelectionMode(!isSelectionMode);
+                if (isSelectionMode) setSelectedIds([]);
+              }}
+              className={`px-6 py-4 lg:px-8 lg:py-4 rounded-2xl lg:rounded-3xl font-black transition-all flex items-center justify-center gap-2 border ${isSelectionMode ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'}`}
+            >
+              <CheckSquare size={20} /> <span className="whitespace-nowrap">{isSelectionMode ? '선택 모드 해제' : '고객 선택/삭제'}</span>
             </button>
           )}
           <button 
@@ -609,17 +621,17 @@ export default function CustomerManagement() {
           <table className="w-full text-left text-sm whitespace-nowrap min-w-[1000px]">
             <thead className="bg-zinc-50 text-zinc-400 font-bold border-b border-zinc-100 uppercase tracking-widest text-[10px]">
               <tr>
-                {!isPartnerAdmin && (
-                  <th className="py-5 px-8 w-12">
+                {isSelectionMode && !isPartnerAdmin && (
+                  <th className="py-5 px-4 w-10 text-center">
                     <input 
                       type="checkbox" 
-                      className="w-5 h-5 rounded-lg border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
+                      className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
                       checked={selectedIds.length > 0 && selectedIds.length === displayCustomers.length}
                       onChange={toggleSelectAll}
                     />
                   </th>
                 )}
-                <th className="py-5 px-8">No.</th>
+                <th className="py-5 px-8 w-12 text-center">No.</th>
                 <th className="py-5 px-8">등록일</th>
                 <th className="py-5 px-8">파트너</th>
                 <th className="py-5 px-8">고객명</th>
@@ -634,17 +646,17 @@ export default function CustomerManagement() {
                 const label = getLabelInfo(customer);
                 return (
                 <tr key={customer._id} className={`group hover:bg-zinc-50 cursor-pointer transition-colors relative ${selectedIds.includes(customer._id) ? 'bg-amber-50/50' : ''}`} onClick={() => openModal(customer)}>
-                  {!isPartnerAdmin && (
-                    <td className="py-5 px-8 w-12" onClick={e => e.stopPropagation()}>
+                  {isSelectionMode && !isPartnerAdmin && (
+                    <td className="py-5 px-4 w-10 text-center" onClick={e => e.stopPropagation()}>
                       <input 
                         type="checkbox" 
-                        className="w-5 h-5 rounded-lg border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
+                        className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
                         checked={selectedIds.includes(customer._id)}
                         onChange={(e) => toggleSelect(customer._id, e as any)}
                       />
                     </td>
                   )}
-                  <td className="py-5 px-8 text-zinc-400 font-medium relative">
+                  <td className="py-5 px-8 w-12 text-center text-zinc-400 font-medium relative">
                     {label && <div className={`absolute left-0 top-1 bottom-1 w-1 ${label.color} rounded-r-full`} />}
                     {displayCustomers.length - i}
                   </td>
