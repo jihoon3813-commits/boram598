@@ -35,17 +35,33 @@ import {
 const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => void; onProductsClick: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [searchParams] = useSearchParams();
   const partnerName = searchParams.get('partner');
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 50);
+      
+      // On mobile, hide when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setVisible(false);
+      } else {
+        setVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-zinc-200 py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
+      ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-zinc-200 py-4 shadow-sm' : 'bg-transparent py-6'}
+      ${(visible || isOpen) ? 'translate-y-0' : '-translate-y-full md:translate-y-0'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
           <img 
@@ -337,13 +353,13 @@ export default function Landing() {
             </FadeIn>
             
             <FadeIn delay={0.3}>
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-[1.2] md:leading-[1.15] mb-8 tracking-tight">
-                최신 가전은 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 whitespace-nowrap">먼저 받고</span>, <br className="hidden md:block" />
-                만기 시 <span className="relative inline-block">
-                  <span className="relative z-10">100% 돌려받는</span>
-                  <div className="absolute bottom-1 md:bottom-3 left-0 w-full h-3 md:h-5 bg-amber-500/30 -z-10" />
-                </span><br className="hidden md:block" />
-                격이 다른 소비의 시작.
+              <h1 className="text-[1.75rem] sm:text-5xl md:text-7xl font-black text-white leading-[1.4] md:leading-[1.2] mb-8 tracking-tighter">
+                최신 가전은 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">먼저 받고,</span> <br />
+                만기 시, <span className="relative inline-block">
+                  <span className="relative z-10">100% 돌려 받는</span>
+                  <div className="absolute bottom-1 md:bottom-3 left-0 w-full h-2 md:h-5 bg-amber-500/30 -z-10" />
+                </span><br />
+                격이 다른 소비의 시작
               </h1>
             </FadeIn>
 
@@ -356,7 +372,7 @@ export default function Landing() {
             <FadeIn delay={0.7} className="flex flex-col sm:flex-row gap-5 items-center">
               <button 
                 onClick={() => setIsModalOpen(true)}
-                className="w-full sm:w-auto px-10 py-5 bg-white text-zinc-950 rounded-full text-lg font-bold transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group"
+                className="w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-white text-zinc-950 rounded-full text-base sm:text-lg font-bold transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 group whitespace-nowrap"
               >
                 늦기전에 프리미엄 가전 신청
                 <ChevronRight className="group-hover:translate-x-1 transition-transform" />
@@ -367,47 +383,47 @@ export default function Landing() {
       </section>
 
       {/* --- Section 2: Value Comparison (Minimalist & Impactful) --- */}
-      <section id="comparison" className="py-32 bg-white relative">
+      <section id="comparison" className="py-16 md:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10 md:mb-20">
             <FadeIn>
               <h2 className="text-xs font-bold text-amber-600 tracking-widest uppercase mb-4">Value Proposition</h2>
               <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
                 소비할 것인가, <br className="md:hidden" /> 돌려받을 것인가?
               </h3>
-              <p className="mt-6 text-zinc-500 text-lg flex items-center justify-center gap-2">
-                같은 가전을 들여도 <span className="font-bold text-zinc-800 border-b border-zinc-800">결과는 완전히 다릅니다.</span>
+              <p className="mt-6 text-zinc-500 text-lg text-center leading-relaxed">
+                같은 가전을 들여도 <br className="md:hidden" /> <span className="font-bold text-zinc-800 border-b border-zinc-800 whitespace-nowrap">결과는 완전히 다릅니다.</span>
               </p>
             </FadeIn>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto relative">
             {/* The Old Way */}
-            <FadeIn delay={0.2} className="bg-zinc-50 rounded-[2.5rem] p-10 md:p-14 border border-zinc-200 flex flex-col h-full transition-all duration-500 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/50 group/old">
-              <div className="flex items-center justify-between mb-12">
-                <h4 className="text-2xl font-bold text-zinc-500 group-hover/old:text-zinc-900 transition-colors">기존 할부 / 구매</h4>
-                <div className="w-12 h-12 rounded-full bg-zinc-200 text-zinc-400 flex items-center justify-center group-hover/old:bg-zinc-100 transition-colors">
-                  <Minus strokeWidth={3} />
+            <FadeIn delay={0.2} className="bg-zinc-50 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-14 border border-zinc-200 flex flex-col h-full transition-all duration-500 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/50 group/old">
+              <div className="flex items-center justify-between mb-6 md:mb-12">
+                <h4 className="text-xl md:text-2xl font-bold text-zinc-500 group-hover/old:text-zinc-900 transition-colors">기존 할부 / 구매</h4>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-zinc-200 text-zinc-400 flex items-center justify-center group-hover/old:bg-zinc-100 transition-colors shrink-0">
+                  <Minus strokeWidth={3} size={20} className="md:w-6 md:h-6" />
                 </div>
               </div>
-              <ul className="space-y-8 flex-1">
+              <ul className="space-y-4 md:space-y-8 flex-1">
                 {[
                   { title: "비용 소멸", desc: "매달 내는 할부금은 그대로 지출 처리되어 사라집니다." },
                   { title: "이자 부담", desc: "장기 할부 시 보이지 않는 이자가 제품가에 포함됩니다." },
                   { title: "감가상각의 늪", desc: "가전의 가치는 0원이 되지만 할부금은 여전히 남습니다." }
                 ].map((item, i) => (
-                  <li key={i} className="flex gap-4 items-start">
-                    <X className="text-zinc-300 shrink-0 mt-1" />
+                  <li key={i} className="flex gap-3 md:gap-4 items-start">
+                    <X className="text-zinc-300 shrink-0 mt-1" size={18} />
                     <div>
-                      <p className="font-bold text-zinc-600 text-lg mb-1 group-hover/old:text-zinc-800 transition-colors">{item.title}</p>
-                      <p className="text-zinc-400 leading-relaxed font-light group-hover/old:text-zinc-500 transition-colors">{item.desc}</p>
+                      <p className="font-bold text-zinc-600 text-base md:text-lg mb-0.5 group-hover/old:text-zinc-800 transition-colors">{item.title}</p>
+                      <p className="text-zinc-400 text-xs md:text-base leading-relaxed font-light group-hover/old:text-zinc-500 transition-colors">{item.desc}</p>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="mt-12 pt-8 border-t border-zinc-200">
-                <p className="text-zinc-400 font-bold uppercase tracking-widest text-sm mb-2">Result</p>
-                <p className="text-3xl font-black text-zinc-400 group-hover/old:text-zinc-600 transition-colors">순수 지출 발생</p>
+              <div className="mt-6 md:mt-12 pt-4 md:pt-8 border-t border-zinc-200">
+                <p className="text-zinc-400 font-bold uppercase tracking-widest text-[10px] sm:text-sm mb-1 sm:mb-2">Result</p>
+                <p className="text-lg sm:text-3xl font-black text-zinc-400 group-hover/old:text-zinc-600 transition-colors whitespace-nowrap">순수 지출 발생</p>
               </div>
             </FadeIn>
 
@@ -417,35 +433,35 @@ export default function Landing() {
             </div>
 
             {/* The B299 Way */}
-            <FadeIn delay={0.4} className="bg-zinc-950 text-white rounded-[2.5rem] p-10 md:p-14 border border-zinc-800 flex flex-col h-full shadow-2xl relative overflow-hidden">
+            <FadeIn delay={0.4} className="bg-zinc-950 text-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-14 border border-zinc-800 flex flex-col h-full shadow-2xl relative overflow-hidden">
               <div className="absolute -top-32 -right-32 w-64 h-64 bg-amber-500/20 blur-[100px] rounded-full" />
               
-              <div className="flex items-center justify-between mb-12 relative z-10">
-                <h4 className="text-2xl font-bold text-white flex items-center gap-3">
-                  보람 플랜 <span className="text-amber-500 italic">B299</span>
+              <div className="flex items-center justify-between mb-6 md:mb-12 relative z-10">
+                <h4 className="text-xl md:text-2xl font-black text-white flex items-center gap-3">
+                  보람상조 플랜
                 </h4>
-                <div className="w-12 h-12 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                  <Check strokeWidth={3} />
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
+                  <Check strokeWidth={3} size={20} className="md:w-6 md:h-6" />
                 </div>
               </div>
-              <ul className="space-y-8 flex-1 relative z-10">
+              <ul className="space-y-4 md:space-y-8 flex-1 relative z-10">
                 {[
                   { title: "안전한 자산 형성", desc: "납입하는 금액 전체가 보람상조를 통한 자산으로 유지됩니다." },
                   { title: "최신 가전 렌탈료 전액 지원", desc: "가입 후 받으신 가전제품의 렌탈료를 상조 만기 시 전액 지원해 드립니다." },
                   { title: "100% 전액 환급", desc: "만기 유지 시 지금까지 낸 금액을 1원도 빠짐없이 돌려드립니다." }
                 ].map((item, i) => (
-                  <li key={i} className="flex gap-4 items-start">
-                    <CheckCircle2 className="text-amber-500 shrink-0 mt-1" />
+                  <li key={i} className="flex gap-3 md:gap-4 items-start">
+                    <CheckCircle2 className="text-amber-500 shrink-0 mt-1" size={18} />
                     <div>
-                      <p className="font-bold text-white text-lg mb-1">{item.title}</p>
-                      <p className="text-zinc-400 leading-relaxed font-light">{item.desc}</p>
+                      <p className="font-bold text-white text-base md:text-lg mb-0.5">{item.title}</p>
+                      <p className="text-zinc-400 text-xs md:text-base leading-relaxed font-light">{item.desc}</p>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="mt-12 pt-8 border-t border-zinc-800 relative z-10">
-                <p className="text-amber-500/70 font-bold uppercase tracking-widest text-sm mb-2">Result</p>
-                <p className="text-3xl font-black text-amber-500">자산 형성 + 가전 혜택</p>
+              <div className="mt-6 md:mt-12 pt-4 md:pt-8 border-t border-zinc-800 relative z-10">
+                <p className="text-amber-500/70 font-bold uppercase tracking-widest text-[10px] sm:text-sm mb-1 sm:mb-2">Result</p>
+                <p className="text-lg sm:text-3xl font-black text-amber-500 whitespace-nowrap">자산 형성 + 가전 혜택</p>
               </div>
             </FadeIn>
           </div>
@@ -453,9 +469,9 @@ export default function Landing() {
       </section>
 
       {/* --- Section 3: Pricing Table (Light Mode - Current) --- */}
-      <section id="pricing" className="py-32 bg-zinc-100 border-t border-zinc-200">
+      <section id="pricing" className="py-16 sm:py-32 bg-zinc-100 border-t border-zinc-200">
         <div className="max-w-7xl mx-auto px-6">
-          <FadeIn className="text-center mb-20 flex flex-col items-center">
+          <FadeIn className="text-center mb-10 md:mb-20 flex flex-col items-center">
             <img 
               src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
               alt="Boram Sangjo Logo" 
@@ -463,51 +479,47 @@ export default function Landing() {
             />
 
             <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
-              당신의 라이프스타일에 <br className="md:hidden" /> 맞춘 설계
+              당신의 <br className="md:hidden" /> 라이프 스타일에 <br className="md:hidden" /> 맞춘 설계
             </h3>
           </FadeIn>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
             {[1, 2, 3, 4].map((unit, i) => (
               <FadeIn key={unit} delay={i * 0.1}>
-                <div className={`p-8 rounded-[2rem] transition-all duration-300 h-full flex flex-col
+                <div className={`py-5 px-5 sm:p-8 rounded-[2rem] transition-all duration-300 h-full flex flex-col
                   ${unit === 2 
-                    ? 'bg-zinc-900 text-white ring-4 ring-zinc-900/10 shadow-2xl scale-105 z-10' 
+                    ? 'bg-zinc-900 text-white ring-4 ring-zinc-900/10 shadow-2xl lg:scale-105 z-10' 
                     : 'bg-white text-zinc-900 border border-zinc-200 shadow-sm hover:shadow-md'}`}
                 >
                   {unit === 2 && (
-                    <div className="self-start px-3 py-1 bg-white text-zinc-900 text-xs font-bold rounded-full mb-6 tracking-wide shadow-lg">
+                    <div className="self-start px-3 py-1 bg-amber-500 text-zinc-950 text-[10px] sm:text-xs font-black rounded-full mb-4 md:mb-6 tracking-wide shadow-lg shadow-amber-500/20">
                       BEST CHOICE
                     </div>
                   )}
-                  {unit !== 2 && <div className="h-6 mb-6" />}
+                  {unit !== 2 && <div className="hidden md:block h-6 mb-6" />}
 
-                  <div className="mb-8">
-                    <h4 className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-400'} text-sm font-semibold tracking-widest uppercase mb-2`}>{unit}구좌 패키지</h4>
+                  <div className="mb-3 md:mb-8">
+                    <h4 className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-400'} text-xs sm:text-sm font-semibold tracking-widest uppercase mb-1 sm:mb-2`}>{unit}구좌 패키지</h4>
                     <div className="flex items-baseline gap-1">
-                      <span className={`text-4xl font-black ${unit === 2 ? 'text-white' : 'text-zinc-900'}`}>{(unit * 29900).toLocaleString()}</span>
-                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} font-medium text-lg ml-1`}>원 / 월</span>
+                      <span className={`text-3xl sm:text-4xl font-black ${unit === 2 ? 'text-white' : 'text-zinc-900'}`}>{(unit * 29900).toLocaleString()}</span>
+                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} font-medium text-sm sm:text-lg ml-1`}>원 / 월</span>
                     </div>
                   </div>
 
-                  <div className={`flex-1 space-y-4 mb-10`}>
-                    <div className={`flex justify-between items-center py-3 border-b ${unit === 2 ? 'border-zinc-800' : 'border-zinc-100'}`}>
-                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} text-sm`}>만기 환급률</span>
+                  <div className={`flex-1 space-y-2 sm:space-y-4 mb-4 sm:mb-10`}>
+                    <div className={`flex justify-between items-center py-1.5 sm:py-3 border-b ${unit === 2 ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} text-xs sm:text-sm`}>만기 환급률</span>
                       <span className="font-bold text-amber-500">100%</span>
                     </div>
-                    <div className={`flex justify-between items-center py-3 border-b ${unit === 2 ? 'border-zinc-800' : 'border-zinc-100'}`}>
-                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} text-sm`}>총 환급액</span>
-                      <span className={`font-bold ${unit === 2 ? 'text-white' : 'text-zinc-900'}`}>{(unit * 598).toLocaleString()}만원</span>
-                    </div>
-                    <div className="flex justify-between items-center py-3">
-                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} text-sm`}>제휴 가전</span>
-                      <span className={`font-medium ${unit === 2 ? 'text-zinc-300' : 'text-zinc-700'} text-right text-sm`}>최신 프리미엄<br/>라인업 지원</span>
+                    <div className={`flex justify-between items-center py-1.5 sm:py-3 border-b ${unit === 2 ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                      <span className={`${unit === 2 ? 'text-zinc-400' : 'text-zinc-500'} text-xs sm:text-sm`}>총 환급액</span>
+                      <span className={`font-bold ${unit === 2 ? 'text-white' : 'text-zinc-900'} text-sm sm:text-base`}>{(unit * 598).toLocaleString()}만원</span>
                     </div>
                   </div>
 
                   <button 
                     onClick={() => openConsultModal(`${unit}구좌 패키지`)}
-                    className={`block w-full text-center py-4 rounded-xl font-bold transition-all
+                    className={`block w-full text-center py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all
                       ${unit === 2 ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-50 text-zinc-900 hover:bg-zinc-100'}`}
                   >
                     이 조건으로 신청
@@ -517,14 +529,22 @@ export default function Landing() {
             ))}
           </div>
 
-          <FadeIn delay={0.4} className="mt-20">
-            <div className="bg-white p-10 md:p-14 rounded-[2.5rem] border border-zinc-200 flex flex-col lg:flex-row items-center gap-10">
+          <FadeIn delay={0.4} className="mt-10 md:mt-20">
+            <div className="bg-white p-5 md:p-14 rounded-[2rem] sm:rounded-[2.5rem] border border-zinc-200 flex flex-col lg:flex-row items-center gap-6 md:gap-10">
               <div className="lg:w-1/3">
-                <h4 className="text-2xl font-black mb-4">납입 및 환급 로드맵</h4>
-                <p className="text-zinc-500 leading-relaxed font-light">가입 즉시 가전을 수령하고, 만기 시 전액 환급받는 가장 투명하고 안전한 플랜입니다.</p>
+                <h4 className="text-xl md:text-2xl font-black mb-2 md:mb-4">납입 및 환급 로드맵</h4>
+                <p className="text-zinc-500 text-sm md:text-base leading-relaxed font-light">가입 즉시 가전을 수령하고, 만기 시 전액 환급받는 가장 투명하고 안전한 플랜입니다.</p>
               </div>
-              <div className="lg:w-2/3 w-full">
-                <div className="h-4 bg-zinc-100 rounded-full flex overflow-hidden mb-8 w-full">
+              <div className="lg:w-2/3 w-full relative">
+                {/* Mobile Roadmap Badge - Above Bar */}
+                <div className="flex md:hidden justify-end mb-2">
+                  <div className="text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-lg flex items-center gap-1.5 overflow-hidden border border-white/10 whitespace-nowrap"
+                       style={{ background: 'linear-gradient(to right, #f59e0b 30%, #09090b 30%)' }}>
+                    <RefreshCcw size={12} /> 100% 환급 달성
+                  </div>
+                </div>
+
+                <div className="h-4 bg-zinc-100 rounded-full flex overflow-hidden mb-6 w-full">
                   <div className="h-full bg-amber-500 w-[30%]" />
                   <div className="h-full bg-zinc-900 w-[70%]" />
                 </div>
@@ -537,7 +557,9 @@ export default function Landing() {
                     <p className="font-bold text-zinc-900">61~200회 (만기)</p>
                     <p className="text-sm text-zinc-500 mt-1">상조 부금 납입 및 자산화</p>
                   </div>
-                  <div className="absolute right-0 top-0 text-white text-[10px] font-bold px-4 py-2 rounded-xl -mt-4 shadow-xl flex items-center gap-2 overflow-hidden border border-white/10"
+
+                  {/* PC Roadmap Badge - Original Absolute Position */}
+                  <div className="hidden md:flex absolute right-0 top-0 text-white text-[10px] font-bold px-4 py-2 rounded-xl -mt-4 shadow-xl items-center gap-2 overflow-hidden border border-white/10 whitespace-nowrap"
                        style={{ background: 'linear-gradient(to right, #f59e0b 30%, #09090b 30%)' }}>
                     <RefreshCcw size={14} /> 100% 환급 달성
                   </div>
@@ -554,7 +576,7 @@ export default function Landing() {
       />
 
       {/* --- Section 4: Bento Grid Benefits --- */}
-      <section id="benefits" className="py-32 bg-zinc-950 text-zinc-100 relative overflow-hidden">
+      <section id="benefits" className="py-16 md:py-32 bg-zinc-950 text-zinc-100 relative overflow-hidden">
          {/* Abstract background glow */}
         <div className="absolute top-0 right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-900/20 blur-[120px] rounded-full pointer-events-none" />
@@ -562,74 +584,82 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <FadeIn className="mb-16">
             <h2 className="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4">Core Benefits</h2>
-            <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight">수준이 다른 보람상조의 특권</h3>
+            <h3 className="text-2xl md:text-5xl font-black text-white tracking-tight whitespace-nowrap">수준이 다른 보람상조의 특권</h3>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6 auto-rows-[240px]">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-6 auto-rows-[140px] md:auto-rows-[240px]">
             {/* Benefit 1 (Large) */}
-            <FadeIn delay={0.1} className="md:col-span-6 lg:col-span-8 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-10 flex border-t-zinc-800/80 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-10" />
+            <FadeIn delay={0.1} className="md:col-span-6 lg:col-span-8 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-6 md:p-10 border-t-zinc-800/80 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent" />
               <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000" alt="Home Appliance" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-50" />
               <div className="relative z-20 flex flex-col justify-between h-full">
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-amber-400 border border-white/20">
-                  <Tv size={28} />
+                <div className="flex items-center gap-4 md:block">
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-amber-400 border border-white/20 shrink-0 md:mb-8">
+                    <Tv size={24} className="md:w-7 md:h-7" />
+                  </div>
+                  <h4 className="text-xl md:text-3xl font-black text-white whitespace-nowrap">최고의 브랜드 즉시 배송</h4>
                 </div>
-                <div>
-                  <h4 className="text-3xl font-black mb-3 text-white">최고의 브랜드, 즉시 배송</h4>
-                  <p className="text-zinc-300 font-light leading-relaxed max-w-md">삼성, LG 등 메이저 브랜드의 최신 홈 가전을 가입 즉시 원하는 곳으로 안전하게 배송 및 설치해 드립니다.</p>
-                </div>
+                <p className="text-zinc-300 font-light leading-relaxed max-w-md mt-4 md:mt-0">삼성, LG 등 메이저 브랜드의 최신 홈 가전을 가입 즉시 원하는 곳으로 안전하게 배송 및 설치해 드립니다.</p>
               </div>
             </FadeIn>
 
             {/* Benefit 2 */}
-            <FadeIn delay={0.2} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
-               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+            <FadeIn delay={0.2} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
                <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=600" alt="Refund" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" />
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
-                  <RefreshCcw size={24} />
-               </div>
-               <div className="relative z-20">
-                 <h4 className="text-xl font-bold mb-2 text-white">100% 전액 환급</h4>
-                 <p className="text-sm text-zinc-300 font-light leading-relaxed">만기 시까지 유지하신 납입금 전액을 한 치의 오차 없이 돌려드립니다.</p>
+               <div className="relative z-20 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 h-full">
+                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10 shrink-0 md:mb-8">
+                    <RefreshCcw size={24} />
+                 </div>
+                 <div className="md:mt-auto">
+                   <h4 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-white whitespace-nowrap">100% 전액 환급</h4>
+                   <p className="text-xs md:text-sm text-zinc-300 font-light leading-relaxed">만기 시까지 유지하신 납입금 전액을 한 치의 오차 없이 돌려드립니다.</p>
+                 </div>
                </div>
             </FadeIn>
 
             {/* Benefit 3 */}
-            <FadeIn delay={0.3} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
-               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+            <FadeIn delay={0.3} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=600" alt="Resort" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
-                  <Palmtree size={24} />
-               </div>
-               <div className="relative z-20">
-                 <h4 className="text-xl font-bold mb-2 text-white">프리미엄 리조트 멤버십</h4>
-                 <p className="text-sm text-zinc-300 font-light leading-relaxed">전국 럭셔리 호텔 및 리조트를 최대 80% 할인된 회원가로 제공합니다.</p>
+               <div className="relative z-20 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 h-full">
+                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10 shrink-0 md:mb-8">
+                    <Palmtree size={24} />
+                 </div>
+                 <div className="md:mt-auto">
+                   <h4 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-white whitespace-nowrap">프리미엄 리조트 멤버십</h4>
+                   <p className="text-xs md:text-sm text-zinc-300 font-light leading-relaxed">전국 럭셔리 호텔 및 리조트를 최대 80% 할인된 회원가로 제공합니다.</p>
+                 </div>
                </div>
             </FadeIn>
 
              {/* Benefit 4 */}
-             <FadeIn delay={0.4} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between relative overflow-hidden group">
-               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+             <FadeIn delay={0.4} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600" alt="Life Plan" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" />
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-amber-500 relative z-20 border border-white/10">
-                  <ArrowRightLeft size={24} />
-               </div>
-               <div className="relative z-20">
-                 <h4 className="text-xl font-bold mb-2 text-white">라이프 플랜 전환</h4>
-                 <p className="text-sm text-zinc-300 font-light leading-relaxed">크루즈, 웨딩, 장례 등 상황에 맞춰 필요한 서비스로 언제든 전환 가능합니다.</p>
+               <div className="relative z-20 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 h-full">
+                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-amber-500 relative z-20 border border-white/10 shrink-0 md:mb-8">
+                    <ArrowRightLeft size={24} />
+                 </div>
+                 <div className="md:mt-auto">
+                   <h4 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-white whitespace-nowrap">라이프 플랜 전환</h4>
+                   <p className="text-xs md:text-sm text-zinc-300 font-light leading-relaxed">크루즈, 웨딩, 장례 등 상황에 맞춰 필요한 서비스로 언제든 전환 가능합니다.</p>
+                 </div>
                </div>
             </FadeIn>
 
              {/* Benefit 5 */}
-             <FadeIn delay={0.5} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between overflow-hidden relative group">
-               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+             <FadeIn delay={0.5} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-6 md:p-8 flex flex-col justify-between overflow-hidden relative group">
+               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
                <img src="https://images.unsplash.com/photo-1523292562811-8fa7962a78c8?auto=format&fit=crop&q=80&w=600" alt="Trust" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
-               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
-                  <Award size={24} />
-               </div>
-               <div className="relative z-20">
-                 <h4 className="text-xl font-bold mb-2 text-white">33만 건의 신뢰 증명</h4>
-                 <p className="text-sm text-zinc-300 font-light leading-relaxed">압도적인 누적 행사 건수로 증명되는 대한민국 1등 상조의 자부심.</p>
+               <div className="relative z-20 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 h-full">
+                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10 shrink-0 md:mb-8">
+                    <Award size={24} />
+                 </div>
+                 <div className="md:mt-auto">
+                   <h4 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-white whitespace-nowrap">33만 건의 신뢰 증명</h4>
+                   <p className="text-xs md:text-sm text-zinc-300 font-light leading-relaxed">압도적인 누적 행사 건수로 증명되는 대한민국 1등 상조의 자부심.</p>
+                 </div>
                </div>
             </FadeIn>
           </div>
@@ -639,7 +669,7 @@ export default function Landing() {
       {/* --- Section 5: Affiliate Cards (Detailed Benefits) --- */}
       <section className="py-32 bg-white border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10 md:mb-20">
             <FadeIn>
               <h2 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight mb-6">보람상조 제휴카드 혜택</h2>
               <p className="text-blue-600 text-base md:text-xl font-bold leading-relaxed max-w-3xl mx-auto px-4">
@@ -652,9 +682,9 @@ export default function Landing() {
           <div className="space-y-12 max-w-5xl mx-auto">
             {/* Card 1: KB 국민카드 */}
             <FadeIn className="bg-zinc-50 rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-              <div className="p-10 md:p-12 flex flex-col lg:flex-row gap-12 items-center">
+              <div className="p-6 sm:p-10 md:p-12 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
                 {/* Image Area (Placeholder) */}
-                <div className="w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200">
+                <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
                     src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/04494_img_imuqfu.png" 
                     alt="KB Kookmin Card" 
@@ -663,32 +693,32 @@ export default function Landing() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="w-full lg:w-1/2">
-                  <div className="mb-8">
-                    <h4 className="text-xl font-black text-zinc-900 mb-2">KB 국민카드(보람상조)</h4>
-                    <p className="text-lg font-bold text-red-600">월 납입금 <span className="text-2xl">최대 27,000원</span> 할인</p>
+                <div className="w-full lg:w-1/2 text-center lg:text-left">
+                  <div className="mb-6 lg:mb-8">
+                    <h4 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">KB 국민카드(보람상조)</h4>
+                    <p className="text-sm sm:text-lg font-bold text-red-600 whitespace-nowrap">월 납입금 <span className="text-lg sm:text-2xl">최대 27,000원</span> 할인</p>
                   </div>
                   
                   <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden mb-6">
-                    <table className="w-full text-left text-sm">
+                    <table className="w-full text-left text-xs sm:text-sm">
                       <thead className="bg-zinc-100 border-b border-zinc-200">
                         <tr>
-                          <th className="px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
-                          <th className="px-6 py-3 font-bold text-zinc-600">할인금액</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">할인금액</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-100">
                         <tr>
-                          <td className="px-6 py-4 text-zinc-600">40만원 이상</td>
-                          <td className="px-6 py-4 font-bold text-zinc-900">15,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 whitespace-nowrap">40만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-bold text-zinc-900 whitespace-nowrap">15,000원 청구할인</td>
                         </tr>
                         <tr>
-                          <td className="px-6 py-4 text-zinc-600">80만원 이상</td>
-                          <td className="px-6 py-4 font-bold text-zinc-900">19,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 whitespace-nowrap">80만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-bold text-zinc-900 whitespace-nowrap">19,000원 청구할인</td>
                         </tr>
                         <tr className="bg-zinc-50/50">
-                          <td className="px-6 py-4 text-zinc-600 font-bold">120만원 이상</td>
-                          <td className="px-6 py-4 font-black text-blue-600">27,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 font-bold whitespace-nowrap">120만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-black text-blue-600 whitespace-nowrap">27,000원 청구할인</td>
                         </tr>
                       </tbody>
                     </table>
@@ -704,9 +734,9 @@ export default function Landing() {
 
             {/* Card 2: Lotte Card */}
             <FadeIn delay={0.1} className="bg-zinc-50 rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-              <div className="p-10 md:p-12 flex flex-col lg:flex-row gap-12 items-center">
+              <div className="p-6 sm:p-10 md:p-12 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
                 {/* Image Area (Placeholder) */}
-                <div className="w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200">
+                <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
                     src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/2224_ckgnks.png" 
                     alt="Lotte Card" 
@@ -715,32 +745,32 @@ export default function Landing() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="w-full lg:w-1/2">
-                  <div className="mb-8">
-                    <h4 className="text-xl font-black text-zinc-900 mb-2">LOCA x Special SE 롯데카드</h4>
-                    <p className="text-lg font-bold text-red-600">월 납입금 <span className="text-2xl">최대 25,000원</span> 할인</p>
+                <div className="w-full lg:w-1/2 text-center lg:text-left">
+                  <div className="mb-6 lg:mb-8">
+                    <h4 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">LOCA x Special SE 롯데카드</h4>
+                    <p className="text-sm sm:text-lg font-bold text-red-600 whitespace-nowrap">월 납입금 <span className="text-lg sm:text-2xl">최대 25,000원</span> 할인</p>
                   </div>
                   
                   <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden mb-6">
-                    <table className="w-full text-left text-sm">
+                    <table className="w-full text-left text-xs sm:text-sm">
                       <thead className="bg-zinc-100 border-b border-zinc-200">
                         <tr>
-                          <th className="px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
-                          <th className="px-6 py-3 font-bold text-zinc-600">할인금액</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">할인금액</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-100">
                         <tr>
-                          <td className="px-6 py-4 text-zinc-600">30만원 이상</td>
-                          <td className="px-6 py-4 font-bold text-zinc-900">13,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 whitespace-nowrap">30만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-bold text-zinc-900 whitespace-nowrap">13,000원 청구할인</td>
                         </tr>
                         <tr>
-                          <td className="px-6 py-4 text-zinc-600">70만원 이상</td>
-                          <td className="px-6 py-4 font-bold text-zinc-900">15,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 whitespace-nowrap">70만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-bold text-zinc-900 whitespace-nowrap">15,000원 청구할인</td>
                         </tr>
                         <tr className="bg-zinc-50/50">
-                          <td className="px-6 py-4 text-zinc-600 font-bold">150만원 이상</td>
-                          <td className="px-6 py-4 font-black text-blue-600">25,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 font-bold whitespace-nowrap">150만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-black text-blue-600 whitespace-nowrap">25,000원 청구할인</td>
                         </tr>
                       </tbody>
                     </table>
@@ -756,9 +786,9 @@ export default function Landing() {
 
             {/* Card 3: Hana Card */}
             <FadeIn delay={0.2} className="bg-zinc-50 rounded-[2.5rem] border border-zinc-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-              <div className="p-10 md:p-12 flex flex-col lg:flex-row gap-12 items-center">
+              <div className="p-6 sm:p-10 md:p-12 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
                 {/* Image Area (Placeholder) */}
-                <div className="w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200">
+                <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
                     src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/13258_v06xvv.png" 
                     alt="Hana Card" 
@@ -767,28 +797,28 @@ export default function Landing() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="w-full lg:w-1/2">
-                  <div className="mb-8">
-                    <h4 className="text-xl font-black text-zinc-900 mb-2">하나카드(보람상조그룹)</h4>
-                    <p className="text-lg font-bold text-red-600">월 납입금 <span className="text-2xl">최대 19,000원</span> 할인</p>
+                <div className="w-full lg:w-1/2 text-center lg:text-left">
+                  <div className="mb-6 lg:mb-8">
+                    <h4 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">하나카드(보람상조그룹)</h4>
+                    <p className="text-sm sm:text-lg font-bold text-red-600 whitespace-nowrap">월 납입금 <span className="text-lg sm:text-2xl">최대 19,000원</span> 할인</p>
                   </div>
                   
                   <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden mb-6">
-                    <table className="w-full text-left text-sm">
+                    <table className="w-full text-left text-xs sm:text-sm">
                       <thead className="bg-zinc-100 border-b border-zinc-200">
                         <tr>
-                          <th className="px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
-                          <th className="px-6 py-3 font-bold text-zinc-600">할인금액</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">전월 이용실적</th>
+                          <th className="px-3 sm:px-6 py-3 font-bold text-zinc-600">할인금액</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-100">
                         <tr>
-                          <td className="px-6 py-4 text-zinc-600">30만원 이상</td>
-                          <td className="px-6 py-4 font-bold text-zinc-900">12,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 whitespace-nowrap">30만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-bold text-zinc-900 whitespace-nowrap">12,000원 청구할인</td>
                         </tr>
                         <tr className="bg-zinc-50/50">
-                          <td className="px-6 py-4 text-zinc-600 font-bold">100만원 이상</td>
-                          <td className="px-6 py-4 font-black text-blue-600">19,000원 청구할인</td>
+                          <td className="px-3 sm:px-6 py-4 text-zinc-600 font-bold whitespace-nowrap">100만원 이상</td>
+                          <td className="px-3 sm:px-6 py-4 font-black text-blue-600 whitespace-nowrap">19,000원 청구할인</td>
                         </tr>
                       </tbody>
                     </table>
@@ -839,22 +869,22 @@ export default function Landing() {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                <div className="absolute inset-0 p-12 flex flex-col justify-end">
-                  <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
-                    <Ship size={28} className="text-white" />
+                <div className="absolute inset-0 p-6 sm:p-12 flex flex-col justify-end">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-4 sm:mb-8 border border-white/20 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
+                    <Ship size={24} className="text-white sm:w-7 sm:h-7" />
                   </div>
-                  <h3 className="text-3xl md:text-4xl font-black text-white mb-6">럭셔리 크루즈 여행</h3>
-                  <p className="text-zinc-300 text-lg leading-relaxed font-light max-w-md mb-8">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-6 whitespace-nowrap">럭셔리 크루즈 여행</h3>
+                  <p className="text-zinc-300 text-sm sm:text-lg leading-relaxed font-light max-w-md mb-4 sm:mb-8">
                     지중해, 알래스카, 동남아 등 세계 유수의 명소를 누비는 초호화 크루즈 여행으로 완벽한 재충전을 선사합니다.
                   </p>
                   <a 
                     href="https://www.borampeople.co.kr/Cruise/Landing" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-zinc-950 rounded-full backdrop-blur-md border border-white/20 transition-all duration-300 w-fit"
+                    className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white text-white hover:text-zinc-950 rounded-full backdrop-blur-md border border-white/20 transition-all duration-300 w-fit"
                   >
-                    <span className="text-sm font-bold">서비스 바로가기</span>
-                    <ExternalLink size={16} />
+                    <span className="text-xs sm:text-sm font-bold">서비스 바로가기</span>
+                    <ExternalLink size={14} className="sm:w-4 sm:h-4" />
                   </a>
                 </div>
               </div>
@@ -869,22 +899,22 @@ export default function Landing() {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                <div className="absolute inset-0 p-12 flex flex-col justify-end">
-                  <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 group-hover:bg-red-500 group-hover:text-white transition-all duration-500">
-                    <Heart size={28} className="text-white" />
+                <div className="absolute inset-0 p-6 sm:p-12 flex flex-col justify-end">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-4 sm:mb-8 border border-white/20 group-hover:bg-red-500 group-hover:text-white transition-all duration-500">
+                    <Heart size={24} className="text-white sm:w-7 sm:h-7" />
                   </div>
-                  <h3 className="text-3xl md:text-4xl font-black text-white mb-6">프리미엄 웨딩 패키지</h3>
-                  <p className="text-zinc-300 text-lg leading-relaxed font-light max-w-md mb-8">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-6 whitespace-nowrap">프리미엄 웨딩 패키지</h3>
+                  <p className="text-zinc-300 text-sm sm:text-lg leading-relaxed font-light max-w-md mb-4 sm:mb-8">
                     최고급 링컨 리무진 웨딩카 지원부터 하이엔드 드레스까지, 생애 가장 빛나는 순간을 완벽하게 디자인합니다.
                   </p>
                   <a 
                     href="https://www.borampeople.co.kr/Wedding/Landing" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-zinc-950 rounded-full backdrop-blur-md border border-white/20 transition-all duration-300 w-fit"
+                    className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white text-white hover:text-zinc-950 rounded-full backdrop-blur-md border border-white/20 transition-all duration-300 w-fit"
                   >
-                    <span className="text-sm font-bold">서비스 바로가기</span>
-                    <ExternalLink size={16} />
+                    <span className="text-xs sm:text-sm font-bold">서비스 바로가기</span>
+                    <ExternalLink size={14} className="sm:w-4 sm:h-4" />
                   </a>
                 </div>
               </div>
@@ -895,14 +925,14 @@ export default function Landing() {
 
 
       {/* --- Section 5: Differentiation (What Makes Us Different) --- */}
-      <section className="py-32 bg-white overflow-hidden">
+      <section className="py-16 md:py-32 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <FadeIn className="text-center mb-20">
-            <h2 className="text-2xl md:text-5xl font-black text-zinc-900 tracking-tight mb-6">보람상조 무엇이 다를까요?</h2>
-            <p className="text-zinc-500 text-base md:text-xl font-light px-4">차원이 다른 품격 있는 서비스로 고객에게 보답합니다.</p>
+          <FadeIn className="text-center mb-10 md:mb-20">
+            <h2 className="text-2xl md:text-5xl font-black text-zinc-900 tracking-tight mb-4 md:mb-6">보람상조 무엇이 다를까요?</h2>
+            <p className="text-zinc-500 text-base md:text-xl font-light px-4">차원이 다른 품격 있는 <br className="md:hidden" /> 서비스로 고객에게 보답합니다.</p>
           </FadeIn>
 
-          <div className="grid lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid lg:grid-cols-3 gap-4 md:gap-8 mb-10 md:mb-16">
             {/* Column 1: Reliability */}
             <FadeIn delay={0.1} className="bg-white py-10 px-8 sm:px-10 rounded-[2rem] border border-zinc-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group">
               <div className="pb-3 border-b-2 border-zinc-900 inline-block mb-8">
@@ -911,12 +941,12 @@ export default function Landing() {
               <h5 className="text-xl font-black text-zinc-900 mb-8 leading-tight">믿을 수 있는 <br />대한민국 대표 상조기업</h5>
               <div className="space-y-6">
                 {[
-                  { icon: <ShieldCheck className="text-blue-600" size={22} />, text: "한국상조공제조합 소비자 피해 보상보험 체결" },
-                  { icon: <Phone className="text-blue-600" size={22} />, text: "365일 연중무휴 24시간 긴급 콜센터 운영" },
-                  { icon: <MapPin className="text-blue-600" size={22} />, text: "전국 직영망 연 1만 5천여건의 행사 진행" },
+                  { icon: <ShieldCheck size={22} />, text: "한국상조공제조합 소비자 피해 보상보험 체결" },
+                  { icon: <Phone size={22} />, text: "365일 연중무휴 24시간 긴급 콜센터 운영" },
+                  { icon: <MapPin size={22} />, text: "전국 직영망 연 1만 5천여건의 행사 진행" },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 items-start">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
                       {item.icon}
                     </div>
                     <p className="text-zinc-600 text-sm font-medium leading-relaxed pt-1">{item.text}</p>
@@ -933,12 +963,12 @@ export default function Landing() {
               <h5 className="text-xl font-black text-zinc-900 mb-8 leading-tight">31년 전통의 <br />독보적인 노하우</h5>
               <div className="space-y-6">
                 {[
-                  { icon: <Heart className="text-red-500" size={22} />, text: "내 부모 내 형제처럼 정성을 다하는 섬김의 행사 진행" },
-                  { icon: <BookOpen className="text-amber-600" size={22} />, text: "직영 시스템으로 직접 교육한 전문인력 양성" },
-                  { icon: <Users className="text-amber-600" size={22} />, text: "각 분야별 현장 경험과 노하우를 겸비한 5,000명의 전문인력 보유" },
+                  { icon: <Heart size={22} />, text: "내 부모 내 형제처럼 정성을 다하는 섬김의 행사 진행" },
+                  { icon: <BookOpen size={22} />, text: "직영 시스템으로 직접 교육한 전문인력 양성" },
+                  { icon: <Users size={22} />, text: "각 분야별 현장 경험과 노하우를 겸비한 5,000명의 전문인력 보유" },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 items-start">
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-500">
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-500">
                       {item.icon}
                     </div>
                     <p className="text-zinc-600 text-sm font-medium leading-relaxed pt-1">{item.text}</p>
@@ -955,12 +985,12 @@ export default function Landing() {
               <h5 className="text-xl font-black text-zinc-900 mb-8 leading-tight">고객 감동을 위한 <br />고품격 전문 서비스</h5>
               <div className="space-y-6">
                 {[
-                  { icon: <Car className="text-zinc-900" size={22} />, text: "국내 최초 링컨콘티넨탈 리무진 서비스" },
-                  { icon: <Sparkles className="text-amber-500" size={22} />, text: "장례 행렬 선두차 꽃장식 제공 (실용신안 등록)" },
-                  { icon: <Tv className="text-zinc-900" size={22} />, text: "국내 최초 온라인 추모관 운영 및 관리" },
+                  { icon: <Car size={22} />, text: "국내 최초 링컨콘티넨탈 리무진 서비스" },
+                  { icon: <Sparkles size={22} />, text: "장례 행렬 선두차 꽃장식 제공 (실용신안 등록)" },
+                  { icon: <Tv size={22} />, text: "국내 최초 온라인 추모관 운영 및 관리" },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 items-start">
-                    <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-zinc-900 group-hover:text-white transition-colors duration-500">
+                    <div className="w-10 h-10 rounded-xl bg-zinc-100 text-zinc-900 flex items-center justify-center shrink-0 group-hover:bg-zinc-900 group-hover:text-white transition-colors duration-500">
                       {item.icon}
                     </div>
                     <p className="text-zinc-600 text-sm font-medium leading-relaxed pt-1">{item.text}</p>
@@ -971,7 +1001,7 @@ export default function Landing() {
           </div>
 
           {/* Bottom Summary Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
             {[
               { 
                 title: "내 부모 내 형제처럼", 
@@ -1023,34 +1053,36 @@ export default function Landing() {
         </div>
 
         {/* Awards Detail Part */}
-        <div className="bg-[#0a1229] py-32 relative">
+        <div className="bg-[#0a1229] py-16 md:py-32 relative">
           {/* Subtle background pattern */}
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
           
           <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 relative z-10">
             <div className="lg:w-3/5">
-              <FadeIn className="mb-12">
+              <FadeIn className="mb-8 md:mb-12">
                 <span className="text-amber-500 font-bold tracking-widest uppercase mb-4 block">Exemplary Company</span>
-                <h4 className="text-white text-3xl md:text-4xl font-black leading-tight mb-6">
+                <h4 className="text-white text-xl sm:text-3xl md:text-4xl font-black leading-tight mb-6">
                   국민이 인정한 모범 상조 기업 <br />
-                  <span className="text-amber-500">대한민국 상조 업계 최다</span> 대상 수상
+                  <span className="text-amber-500 whitespace-nowrap">대한민국 상조 업계 최다</span> <span className="whitespace-nowrap">대상 수상</span>
                 </h4>
               </FadeIn>
 
               {/* Major Awards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
                 {[
                   { title: "국가 소비자 중심 브랜드 대상", years: "9년 연속" },
                   { title: "대한민국 퍼스트브랜드 대상", years: "8년 연속" },
                   { title: "코리아탑어워드 명품 브랜드 대상", years: "6년 연속" },
                   { title: "한국의 영향력 있는 CEO 대상", years: "5년 연속" },
                 ].map((award, i) => (
-                  <FadeIn key={i} delay={i * 0.1} className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white/10 transition-all">
-                    <div className="w-12 h-12 mb-4 relative text-amber-500">
-                      <Trophy size={48} />
+                  <FadeIn key={i} delay={i * 0.1} className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 sm:p-6 rounded-2xl flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-0 group hover:bg-white/10 transition-all">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 sm:mb-4 relative text-amber-500 shrink-0">
+                      <Trophy size={36} className="sm:w-12 sm:h-12" />
                     </div>
-                    <p className="text-zinc-400 text-xs mb-1">{award.title}</p>
-                    <p className="text-white font-black text-lg">{award.years} 대상 수상</p>
+                    <div>
+                      <p className="text-zinc-400 text-[10px] sm:text-xs mb-1">{award.title}</p>
+                      <p className="text-white font-black text-base sm:text-lg">{award.years} 대상 수상</p>
+                    </div>
                   </FadeIn>
                 ))}
               </div>
@@ -1074,7 +1106,7 @@ export default function Landing() {
               </FadeIn>
             </div>
 
-            <div className="lg:w-2/5 relative">
+            <div className="hidden lg:block lg:w-2/5 relative">
               <FadeIn delay={0.3} className="relative z-10">
                 <img 
                   src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777276561/%ED%8A%B8%EB%A1%9C%ED%94%BC_tplfnu.png" 

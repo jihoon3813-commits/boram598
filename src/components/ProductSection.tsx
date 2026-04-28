@@ -305,7 +305,7 @@ function ProductCard({
           )}
         </div>
         <div className="p-5 flex-1 flex flex-col">
-          <h4 className="text-sm font-bold text-zinc-900 line-clamp-2 leading-tight mb-3 min-h-[2.5rem]">
+          <h4 className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-tight mb-2 sm:mb-3 min-h-[3rem] sm:min-h-[2.5rem]">
             {product.name}
           </h4>
           <div className="flex flex-wrap gap-1.5 mt-auto">
@@ -327,7 +327,7 @@ function ProductCard({
       <div className="px-4 pb-4 md:px-5 md:pb-5">
         <button
           onClick={onConsultClick}
-          className="w-full py-2.5 text-center text-[11px] md:text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-xl transition-all"
+          className="w-full py-2 sm:py-2.5 text-center text-[10px] md:text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-xl transition-all"
         >
           가입상담 신청하기
         </button>
@@ -497,22 +497,25 @@ export default function ProductSection({
               Premium Electronics
             </h2>
             <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight mb-6">
-              선택할 수 있는 프리미엄 가전
+              선택할 수 있는 <br className="md:hidden" /> 프리미엄 가전
             </h3>
             <p className="text-zinc-500 text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-light px-4">
-              삼성, LG 등 국내 최고 브랜드의 프리미엄 가전을 만나보세요.
+              삼성, LG 등 국내 최고 브랜드의 <br className="md:hidden" /> 프리미엄 가전을 만나보세요.
             </p>
           </div>
 
           {/* Payment Methods Info */}
-          <div className="grid md:grid-cols-2 gap-6 mb-20">
-            <div className="bg-zinc-50 rounded-[2rem] p-8 md:p-10 border border-zinc-200 relative overflow-hidden group hover:border-zinc-300 transition-all">
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            <div className="bg-zinc-50 rounded-[2rem] p-6 md:p-10 border border-zinc-200 relative overflow-hidden group hover:border-zinc-300 transition-all">
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/5 rounded-full blur-[80px] group-hover:bg-amber-500/10 transition-all" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 mb-6">
-                  <CreditCard size={28} />
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 bg-amber-500/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 shrink-0">
+                    <CreditCard size={20} className="sm:hidden" />
+                    <CreditCard size={28} className="hidden sm:block" />
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black text-zinc-900">60개월 렌탈</h4>
                 </div>
-                <h4 className="text-xl font-black text-zinc-900 mb-3">60개월 렌탈</h4>
                 <p className="text-zinc-500 leading-relaxed font-light mb-4">
                   월 납입금을 60개월 동안 렌탈 방식으로 결제합니다. 상조 만기 후 납입금 전액이 환급됩니다.
                 </p>
@@ -522,25 +525,28 @@ export default function ProductSection({
               </div>
             </div>
 
-            <div className="bg-zinc-50 rounded-[2rem] p-8 md:p-10 border border-zinc-200 relative overflow-hidden group hover:border-zinc-300 transition-all">
+            <div className="bg-zinc-50 rounded-[2rem] p-6 md:p-10 border border-zinc-200 relative overflow-hidden group hover:border-zinc-300 transition-all">
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/5 rounded-full blur-[80px] group-hover:bg-blue-500/10 transition-all" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
-                  <Wallet size={28} />
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-500/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+                    <Wallet size={20} className="sm:hidden" />
+                    <Wallet size={28} className="hidden sm:block" />
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black text-zinc-900">48개월 무이자(급) 할부</h4>
                 </div>
-                <h4 className="text-xl font-black text-zinc-900 mb-3">48개월 무이자(급) 할부</h4>
                 <p className="text-zinc-500 leading-relaxed font-light mb-4">
                   신한카드 48PAY 서비스를 통해 48개월 무이자(급) 할부로 결제합니다. 마찬가지로 만기 후 전액 환급됩니다.
                 </p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-bold border border-green-200">
-                    <Sparkles size={14} /> 만기 시 전액 환급
+                <div className="flex items-center gap-2 flex-nowrap overflow-x-auto scrollbar-hide">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-700 rounded-full text-[10px] sm:text-xs font-bold border border-green-200 whitespace-nowrap shrink-0">
+                    <Sparkles size={12} /> 만기 시 전액 환급
                   </div>
                   <button 
                     onClick={() => setShowShinhanPay(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-bold border border-blue-200 hover:bg-blue-100 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-700 rounded-full text-[10px] sm:text-xs font-bold border border-blue-200 hover:bg-blue-100 transition-colors whitespace-nowrap shrink-0"
                   >
-                    <ExternalLink size={14} /> 신한 48PAY 안내
+                    <ExternalLink size={12} /> 신한 48PAY 안내
                   </button>
                 </div>
               </div>
