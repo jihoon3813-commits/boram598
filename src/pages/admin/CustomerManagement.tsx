@@ -1232,20 +1232,6 @@ function CustomerDetailModal({
                       <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">파트너 ID</p>
                       <p className="text-xl font-black">{customer.partnerLoginId || 'admin'}</p>
                    </div>
-                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">결제 방식 *</label>
-                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
-                      {['60개월 렌탈', '신한 48페이'].map(pt => (
-                        <button 
-                          key={pt}
-                          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${regForm.paymentType === pt ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
-                          onClick={() => setRegForm({...regForm, paymentType: pt})}
-                        >
-                          {pt}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </section>
 
