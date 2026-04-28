@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'convex/react';
@@ -203,7 +203,7 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
         {[
           { id: 'rental', label: '60개월 렌탈', value: '60개월 렌탈' },
           { id: 'pay48', label: '신한 48페이', value: '신한 48페이' }
-        ].map((type) => (
+        ].filter(type => availableMethods.includes(type.value)).map((type) => (
           <button
             key={type.id}
             type="button"
@@ -248,10 +248,31 @@ export default function Landing() {
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  
   const activePartner = useQuery(api.partners.getByLoginId, partnerName ? { loginId: partnerName } : "skip");
   const mainProducts = useQuery(api.products.listMainProducts, partnerName ? (activePartner ? { partnerId: activePartner._id } : "skip") : {});
   const globalSettings = useQuery(api.settings.get);
   const addCustomer = useMutation(api.customers.add);
+
+  const allProductsList = useMemo(() => {
+    if (!mainProducts) return [];
+    return Array.from(new Map(mainProducts.flatMap(({ products }: any) => products).map((p: any) => [p._id, p])).values());
+  }, [mainProducts]);
+
+  const selectedProductObj = allProductsList.find((p: any) => p.name === formData.product);
+  const availableMethods = useMemo(() => {
+    if (!formData.product || formData.product === "상담 시 선택") return ['60개월 렌탈', '신한 48페이'];
+    return selectedProductObj?.paymentMethods || ['60개월 렌탈', '신한 48페이'];
+  }, [formData.product, selectedProductObj]);
+
+  // Auto-select if only one option available
+  useEffect(() => {
+    if (availableMethods.length === 1 && formData.paymentType !== availableMethods[0]) {
+      setFormData(prev => ({ ...prev, paymentType: availableMethods[0] }));
+    } else if (formData.paymentType && !availableMethods.includes(formData.paymentType)) {
+      setFormData(prev => ({ ...prev, paymentType: '' }));
+    }
+  }, [availableMethods]);
 
   const filteredMainProducts = mainProducts;
 
