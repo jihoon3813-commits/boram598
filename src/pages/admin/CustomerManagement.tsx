@@ -610,7 +610,7 @@ export default function CustomerManagement() {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-[1.5rem] lg:rounded-[2.5rem] shadow-xl border border-zinc-200 overflow-hidden">
+      <div className="bg-white rounded-lg lg:rounded-xl shadow-xl border border-zinc-200 overflow-hidden">
         <div className="overflow-x-auto scrollbar-hide">
           <table className="w-full text-left text-sm whitespace-nowrap min-w-[1000px]">
             <thead className="bg-zinc-50 text-zinc-400 font-bold border-b border-zinc-100 uppercase tracking-widest text-[10px]">
@@ -686,7 +686,7 @@ export default function CustomerManagement() {
                     </span>
                   </td>
                   <td className="py-5 px-8 text-right">
-                    <button className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-900 group-hover:text-white transition-all">
+                    <button className="w-9 h-9 rounded-md bg-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-900 group-hover:text-white transition-all">
                       <MoreHorizontal size={18} />
                     </button>
                   </td>
@@ -711,7 +711,7 @@ export default function CustomerManagement() {
       {/* Registration Modal */}
       {isRegModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/60 backdrop-blur-md p-4">
-          <div className="bg-white rounded-[3rem] w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="p-8 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
               <div>
                 <h2 className="text-2xl font-black text-zinc-900 flex items-center gap-2">
@@ -730,7 +730,7 @@ export default function CustomerManagement() {
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">파트너사</label>
                       <select 
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                         value={regForm.partnerId}
                         onChange={e => setRegForm({...regForm, partnerId: e.target.value})}
                       >
@@ -743,23 +743,23 @@ export default function CustomerManagement() {
                   )}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">고객명 *</label>
-                    <input type="text" placeholder="홍길동" className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-black focus:outline-none" value={regForm.name} onChange={e => setRegForm({...regForm, name: e.target.value})} />
+                    <input type="text" placeholder="홍길동" className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-black focus:outline-none" value={regForm.name} onChange={e => setRegForm({...regForm, name: e.target.value})} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">연락처 *</label>
-                    <input type="text" placeholder="010-0000-0000" className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-black focus:outline-none" value={regForm.phone} onChange={e => setRegForm({...regForm, phone: formatPhone(e.target.value)})} />
+                    <input type="text" placeholder="010-0000-0000" className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-black focus:outline-none" value={regForm.phone} onChange={e => setRegForm({...regForm, phone: formatPhone(e.target.value)})} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">생년월일</label>
-                    <input type="text" placeholder="YYYY-MM-DD" className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none" value={regForm.dob} onChange={e => setRegForm({...regForm, dob: formatDOB(e.target.value)})} />
+                    <input type="text" placeholder="YYYY-MM-DD" className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:outline-none" value={regForm.dob} onChange={e => setRegForm({...regForm, dob: formatDOB(e.target.value)})} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">성별</label>
-                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
+                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-lg p-1">
                       {['남', '여'].map(g => (
                         <button 
                           key={g}
-                          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${regForm.gender === g ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
+                          className={`flex-1 py-3 text-sm font-bold rounded-md transition-all ${regForm.gender === g ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
                           onClick={() => setRegForm({...regForm, gender: g})}
                         >
                           {g}
@@ -770,7 +770,7 @@ export default function CustomerManagement() {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">상품 카테고리</label>
                     <select 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:outline-none"
                       value={regForm.categoryId}
                       onChange={e => setRegForm({...regForm, categoryId: e.target.value, productId: ''})}
                     >
@@ -783,7 +783,7 @@ export default function CustomerManagement() {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">가전제품</label>
                     <select 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none disabled:opacity-50"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:outline-none disabled:opacity-50"
                       value={regForm.productId}
                       disabled={!regForm.categoryId}
                       onChange={e => setRegForm({...regForm, productId: e.target.value})}

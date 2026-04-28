@@ -57,13 +57,13 @@ function SortableProductItem({ product, onUpdate, onDelete, onEdit }: { product:
     <div 
       ref={setNodeRef} 
       style={style}
-      className="bg-white border border-zinc-200 rounded-xl p-3 lg:p-4 flex items-center gap-3 lg:gap-4 group hover:border-zinc-300 transition-all shadow-sm mb-3"
+      className="bg-white border border-zinc-200 rounded-md p-3 lg:p-4 flex items-center gap-3 lg:gap-4 group hover:border-zinc-300 transition-all shadow-sm mb-3"
     >
       <div {...attributes} {...listeners} className="cursor-grab text-zinc-400 hover:text-zinc-600 px-1">
         <GripVertical size={20} />
       </div>
       
-      <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-lg overflow-hidden bg-zinc-100 flex-shrink-0 border border-zinc-200">
+      <div className="w-14 h-14 lg:w-16 lg:h-16 rounded overflow-hidden bg-zinc-100 flex-shrink-0 border border-zinc-200">
         <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover" />
       </div>
       
@@ -259,7 +259,7 @@ export default function ProductManagement() {
       {/* Sidebar: Groups */}
       <div className={`
         ${isMobileSidebarOpen ? 'flex' : 'hidden'} lg:flex 
-        flex-col w-full lg:w-80 bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm shrink-0
+        flex-col w-full lg:w-80 bg-white border border-zinc-200 rounded-lg overflow-hidden shadow-sm shrink-0
       `}>
         <div className="p-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
           <h3 className="font-bold text-zinc-900 flex items-center gap-2">
@@ -283,7 +283,7 @@ export default function ProductManagement() {
                 setSelectedGroupId(group._id);
                 if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
               }}
-              className={`p-4 rounded-xl cursor-pointer transition-all border ${
+              className={`p-4 rounded-lg cursor-pointer transition-all border ${
                 selectedGroupId === group._id 
                   ? 'bg-amber-50 border-amber-200 shadow-sm' 
                   : 'bg-white border-zinc-100 hover:border-zinc-200 hover:bg-zinc-50'
@@ -319,7 +319,7 @@ export default function ProductManagement() {
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col min-w-0 ${!isMobileSidebarOpen || window.innerWidth >= 1024 ? 'flex' : 'hidden'}`}>
         {!selectedGroupId ? (
-          <div className="flex-1 flex items-center justify-center bg-zinc-50 rounded-2xl border-2 border-dashed border-zinc-200 text-zinc-400 p-8">
+          <div className="flex-1 flex items-center justify-center bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-200 text-zinc-400 p-8">
             <div className="text-center">
               <Layers size={48} className="mx-auto mb-4 opacity-10" />
               <p className="font-bold">좌측 그룹을 선택하여 제품을 관리하세요</p>
@@ -342,9 +342,9 @@ export default function ProductManagement() {
             </button>
 
             {/* Sync Guidance */}
-            <div className="bg-zinc-900 text-white rounded-2xl p-5 lg:p-6 mb-6 shadow-xl">
+            <div className="bg-zinc-900 text-white rounded-lg p-5 lg:p-6 mb-6 shadow-xl">
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-zinc-950 shrink-0">
+                <div className="w-10 h-10 bg-amber-500 rounded-md flex items-center justify-center text-zinc-950 shrink-0">
                   <RefreshCw size={20} />
                 </div>
                 <div className="flex-1">
@@ -371,7 +371,7 @@ export default function ProductManagement() {
             </div>
 
             {/* Active Group Header */}
-            <div className="bg-white border border-zinc-200 rounded-2xl p-5 lg:p-8 mb-6 shadow-sm">
+            <div className="bg-white border border-zinc-200 rounded-lg p-5 lg:p-8 mb-6 shadow-sm">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                 <div className="min-w-0 flex-1">
                   <h2 className="text-xl lg:text-3xl font-black text-zinc-900 mb-2 truncate">
@@ -400,13 +400,13 @@ export default function ProductManagement() {
                       }
                     }}
                     disabled={isFetching}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-black transition-all ${isFetching ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20'}`}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-md text-sm font-black transition-all ${isFetching ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20'}`}
                   >
                     <RefreshCw size={18} className={isFetching ? 'animate-spin' : ''} /> {isFetching ? '수집중' : '가져오기'}
                   </button>
                   <button 
                     onClick={() => { setEditingProduct(null); setIsProductModalOpen(true); }}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-xl text-sm font-black hover:bg-zinc-800 transition-all shadow-lg"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-md text-sm font-black hover:bg-zinc-800 transition-all shadow-lg"
                   >
                     <Plus size={18} /> 추가
                   </button>
@@ -445,7 +445,7 @@ export default function ProductManagement() {
               </DndContext>
               
               {products?.length === 0 && (
-                <div className="py-20 text-center text-zinc-400 bg-white rounded-2xl border border-zinc-200 border-dashed">
+                <div className="py-20 text-center text-zinc-400 bg-white rounded-lg border border-zinc-200 border-dashed">
                   <RefreshCw size={40} className="mx-auto mb-4 opacity-10" />
                   <p className="font-bold">가져오기 버튼을 눌러 제품 정보를 불러오세요</p>
                 </div>
@@ -458,7 +458,7 @@ export default function ProductManagement() {
       {/* Modals - Reusing existing patterns but with better mobile spacing */}
       {isGroupModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/60 p-4 backdrop-blur-md">
-          <div className="bg-white rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="p-6 lg:p-8 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
               <h3 className="text-xl font-black text-zinc-900">{editingGroup ? '그룹 수정' : '그룹 추가'}</h3>
               <button onClick={() => setIsGroupModalOpen(false)} className="p-2 text-zinc-400 hover:text-zinc-900 transition-colors">

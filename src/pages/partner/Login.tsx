@@ -71,14 +71,14 @@ export default function PartnerLogin() {
           <h1 className="text-2xl font-black text-white tracking-tight">파트너 센터 로그인</h1>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 md:p-10 shadow-2xl">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Partner ID</label>
               <input 
                 type="text" 
                 required
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-zinc-700"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-zinc-700"
                 placeholder="파트너 아이디"
                 value={formData.id}
                 onChange={(e) => setFormData({ ...formData, id: e.target.value })}
@@ -90,7 +90,7 @@ export default function PartnerLogin() {
               <input 
                 type="password" 
                 required
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-zinc-700"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-zinc-700"
                 placeholder="비밀번호"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -100,7 +100,7 @@ export default function PartnerLogin() {
             <div className="pt-4">
               <button 
                 type="submit"
-                className="w-full bg-white text-zinc-950 font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-200 active:scale-[0.98] transition-all shadow-lg"
+                className="w-full bg-white text-zinc-950 font-black py-4 rounded-md flex items-center justify-center gap-2 hover:bg-zinc-200 active:scale-[0.98] transition-all shadow-lg"
               >
                 파트너 센터 접속
                 <ChevronRight size={20} />

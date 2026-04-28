@@ -99,9 +99,9 @@ export default function Settings() {
   return (
     <div className="max-w-4xl space-y-6 lg:space-y-8 pb-20 px-1 lg:px-0">
       {/* Admin Password Setting */}
-      <section className="bg-white rounded-2xl shadow-sm border border-zinc-200 overflow-hidden">
+      <section className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
         <div className="p-5 lg:p-6 border-b border-zinc-100 bg-zinc-50/50 flex items-center gap-3">
-          <div className="p-2 bg-zinc-900 text-white rounded-xl">
+          <div className="p-2 bg-zinc-900 text-white rounded-md">
             <Lock size={20} />
           </div>
           <div>
@@ -118,7 +118,7 @@ export default function Settings() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="변경할 비밀번호" 
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all" 
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all" 
               />
             </div>
             <div className="space-y-2">
@@ -128,14 +128,14 @@ export default function Settings() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="비밀번호 확인" 
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all" 
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-5 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all" 
               />
             </div>
           </div>
           <div className="flex justify-end">
             <button 
               onClick={handlePasswordChange}
-              className="w-full sm:w-auto bg-zinc-900 text-white px-8 py-4 rounded-2xl text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
+              className="w-full sm:w-auto bg-zinc-900 text-white px-8 py-4 rounded-lg text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
             >
               비밀번호 업데이트
             </button>
@@ -144,10 +144,10 @@ export default function Settings() {
       </section>
 
       {/* Status Management */}
-      <section className="bg-white rounded-2xl shadow-sm border border-zinc-200 overflow-hidden">
+      <section className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
         <div className="p-5 lg:p-8 border-b border-zinc-100 bg-zinc-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/20">
+            <div className="p-2 bg-amber-500 text-white rounded-md shadow-lg shadow-amber-500/20">
               <SettingsIcon size={20} />
             </div>
             <div>
@@ -157,7 +157,7 @@ export default function Settings() {
           </div>
           <button 
             onClick={handleAddStatus}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-xl text-sm font-black hover:bg-zinc-800 transition-all shadow-lg"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-md text-sm font-black hover:bg-zinc-800 transition-all shadow-lg"
           >
             <Plus size={18} /> 상태 추가하기
           </button>
@@ -165,7 +165,7 @@ export default function Settings() {
         
         <div className="p-5 lg:p-8">
           {statuses.length === 0 ? (
-            <div className="text-center text-zinc-300 py-20 bg-zinc-50 rounded-3xl border-2 border-dashed border-zinc-100">
+            <div className="text-center text-zinc-300 py-20 bg-zinc-50 rounded-xl border-2 border-dashed border-zinc-100">
               <SettingsIcon size={48} className="mx-auto mb-4 opacity-10" />
               <p className="font-bold">등록된 진행 상태가 없습니다.</p>
             </div>
@@ -182,7 +182,7 @@ export default function Settings() {
 
               {/* Status Items */}
               {statuses.map((status, index) => (
-                <div key={index} className="flex flex-col lg:flex-row items-start lg:items-center gap-4 p-5 lg:p-4 bg-white border border-zinc-200 rounded-2xl hover:border-zinc-300 transition-all group">
+                <div key={index} className="flex flex-col lg:flex-row items-start lg:items-center gap-4 p-5 lg:p-4 bg-white border border-zinc-200 rounded-lg hover:border-zinc-300 transition-all group">
                   <div className="flex items-center gap-4 w-full lg:w-auto">
                     <div className="flex lg:flex-col gap-1">
                       <button 
@@ -212,7 +212,7 @@ export default function Settings() {
                     </div>
                     <button 
                       onClick={() => handleRemoveStatus(index)}
-                      className="lg:hidden p-3 text-red-500 bg-red-50 rounded-xl"
+                      className="lg:hidden p-3 text-red-500 bg-red-50 rounded-md"
                     >
                       <Trash2 size={20} />
                     </button>
@@ -229,7 +229,7 @@ export default function Settings() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 w-full lg:w-auto">
-                    <div className="flex flex-col lg:items-center gap-2 bg-zinc-50 lg:bg-transparent p-3 lg:p-0 rounded-xl lg:w-24">
+                    <div className="flex flex-col lg:items-center gap-2 bg-zinc-50 lg:bg-transparent p-3 lg:p-0 rounded-md lg:w-24">
                       <span className="lg:hidden text-[10px] font-black text-zinc-400 uppercase tracking-widest">Active</span>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input 
@@ -241,7 +241,7 @@ export default function Settings() {
                         <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                       </label>
                     </div>
-                    <div className="flex flex-col lg:items-center gap-2 bg-zinc-50 lg:bg-transparent p-3 lg:p-0 rounded-xl lg:w-24">
+                    <div className="flex flex-col lg:items-center gap-2 bg-zinc-50 lg:bg-transparent p-3 lg:p-0 rounded-md lg:w-24">
                       <span className="lg:hidden text-[10px] font-black text-zinc-400 uppercase tracking-widest">Partner Edit</span>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input 
@@ -269,9 +269,9 @@ export default function Settings() {
       </section>
 
       {/* Privacy Policy Setting */}
-      <section className="bg-white rounded-2xl shadow-sm border border-zinc-200 overflow-hidden">
+      <section className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
         <div className="p-5 lg:p-8 border-b border-zinc-100 bg-zinc-50/50 flex items-center gap-3">
-          <div className="p-2 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-600/20">
+          <div className="p-2 bg-blue-600 text-white rounded-md shadow-lg shadow-blue-600/20">
              <CheckCircle size={20} />
           </div>
           <div>
@@ -284,7 +284,7 @@ export default function Settings() {
             value={privacyPolicy}
             onChange={(e) => setPrivacyPolicy(e.target.value)}
             placeholder="상담 신청 시 고객에게 노출될 개인정보 수집 동의 약관 내용을 입력하세요."
-            className="w-full h-80 bg-zinc-50 border border-zinc-200 rounded-2xl px-6 py-5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/10 resize-none leading-relaxed"
+            className="w-full h-80 bg-zinc-50 border border-zinc-200 rounded-lg px-6 py-5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/10 resize-none leading-relaxed"
           />
         </div>
       </section>
@@ -294,7 +294,7 @@ export default function Settings() {
         <button 
           onClick={handleSaveSettings}
           disabled={saveStatus === 'saving'}
-          className={`flex items-center gap-3 px-8 py-5 lg:py-4 rounded-3xl lg:rounded-2xl font-black text-lg lg:text-base transition-all shadow-2xl active:scale-95 ${
+          className={`flex items-center gap-3 px-8 py-5 lg:py-4 rounded-xl lg:rounded-lg font-black text-lg lg:text-base transition-all shadow-2xl active:scale-95 ${
             saveStatus === 'saved' 
               ? 'bg-green-600 text-white' 
               : saveStatus === 'saving'

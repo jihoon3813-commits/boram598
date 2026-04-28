@@ -89,7 +89,7 @@ export default function AdminLayout() {
                   <Link
                     to={item.path}
                     onClick={closeSidebar}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-colors ${
+                    className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
                       isActive ? 'bg-amber-500 text-zinc-950 font-bold shadow-lg shadow-amber-500/20' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                     }`}
                   >
@@ -128,11 +128,11 @@ export default function AdminLayout() {
             </div>
           </div>
           <div className="flex items-center gap-2 lg:gap-4">
-            <button onClick={() => window.location.reload()} className="p-2 lg:px-3 lg:py-1.5 rounded-lg bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-all flex items-center gap-2">
+            <button onClick={() => window.location.reload()} className="p-2 lg:px-3 lg:py-1.5 rounded-md bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-all flex items-center gap-2">
               <RefreshCw size={18} className="lg:w-4 lg:h-4" />
               <span className="hidden lg:inline text-sm font-bold">새로고침</span>
             </button>
-            <Link to="/" target="_blank" className="px-3 py-2 lg:px-4 lg:py-1.5 rounded-lg bg-zinc-900 text-white hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-sm">
+            <Link to="/" target="_blank" className="px-3 py-2 lg:px-4 lg:py-1.5 rounded-md bg-zinc-900 text-white hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-sm">
               <Home size={18} className="lg:w-4 lg:h-4" />
               <span className="hidden lg:inline text-sm font-bold">홈페이지</span>
             </Link>

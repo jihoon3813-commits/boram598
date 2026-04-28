@@ -144,7 +144,7 @@ export default function PartnerManagement() {
   return (
     <div className="space-y-6">
       {/* Filters & Actions */}
-      <div className="bg-white p-4 lg:p-6 rounded-[1.5rem] lg:rounded-2xl shadow-xl border border-zinc-200 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 lg:gap-6">
+      <div className="bg-white p-4 lg:p-6 rounded-lg lg:rounded-lg shadow-xl border border-zinc-200 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
           <div className="relative flex-1 sm:max-w-xs">
             <input 
@@ -153,14 +153,14 @@ export default function PartnerManagement() {
               name="partner-search-input"
               autoComplete="off"
               placeholder="파트너명, 아이디, 담당자 검색" 
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-4 pr-10 py-3 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-md pl-4 pr-10 py-3 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
           </div>
           <select 
-            className="bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+            className="bg-zinc-50 border border-zinc-200 rounded-md px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -171,13 +171,13 @@ export default function PartnerManagement() {
           </select>
         </div>
         
-        <button className="flex items-center justify-center gap-2 bg-zinc-900 text-white px-6 py-3.5 rounded-xl text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95" onClick={() => openModal(null)}>
+        <button className="flex items-center justify-center gap-2 bg-zinc-900 text-white px-6 py-3.5 rounded-md text-sm font-black hover:bg-zinc-800 transition-all shadow-lg active:scale-95" onClick={() => openModal(null)}>
           <Plus size={18} /> 파트너 등록
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[1.5rem] lg:rounded-2xl shadow-xl border border-zinc-200 overflow-hidden">
+      <div className="bg-white rounded-lg lg:rounded-lg shadow-xl border border-zinc-200 overflow-hidden">
         <div className="overflow-x-auto scrollbar-hide">
           <table className="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
           <thead className="bg-zinc-50 text-zinc-600 font-medium border-b border-zinc-200">
@@ -225,7 +225,7 @@ export default function PartnerManagement() {
     {/* Detail Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/60 p-4 backdrop-blur-md">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="bg-white rounded-xl w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="p-6 lg:p-8 border-b border-zinc-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-zinc-50/50">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto">
                 <h2 className="text-xl lg:text-2xl font-black text-zinc-900 truncate">
@@ -237,7 +237,7 @@ export default function PartnerManagement() {
                       href={`/${selectedPartner.loginId}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-black text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition-all shadow-sm whitespace-nowrap"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-200 rounded-md text-[10px] font-black text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition-all shadow-sm whitespace-nowrap"
                     >
                       <ExternalLink size={14} /> 분양몰 보기
                     </a>
@@ -245,7 +245,7 @@ export default function PartnerManagement() {
                       href={`/partner/login?loginId=${selectedPartner.loginId}&auto=true`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded-xl text-[10px] font-black text-white hover:bg-zinc-800 transition-all shadow-sm whitespace-nowrap"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded-md text-[10px] font-black text-white hover:bg-zinc-800 transition-all shadow-sm whitespace-nowrap"
                     >
                       <ShieldCheck size={14} /> 어드민 접속
                     </a>
@@ -271,7 +271,7 @@ export default function PartnerManagement() {
                       id="partner-login-id"
                       name="partner-login-id"
                       autoComplete="off"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all disabled:opacity-50" 
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all disabled:opacity-50" 
                       value={formData.loginId} 
                       onChange={(e) => setFormData({...formData, loginId: e.target.value})}
                       disabled={!!selectedPartner}
@@ -286,7 +286,7 @@ export default function PartnerManagement() {
                         name="partner-password-field"
                         autoComplete="new-password"
                         placeholder={selectedPartner ? "변경할 비밀번호 입력" : "비밀번호 입력"} 
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all pr-12" 
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all pr-12" 
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                       />
@@ -305,7 +305,7 @@ export default function PartnerManagement() {
                       type="password" 
                       autoComplete="new-password"
                       placeholder="비밀번호 다시 입력" 
-                      className={`w-full bg-zinc-50 border rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all ${
+                      className={`w-full bg-zinc-50 border rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all ${
                         formData.confirmPassword && formData.password !== formData.confirmPassword 
                           ? 'border-red-500' 
                           : formData.confirmPassword && formData.password === formData.confirmPassword 
@@ -325,7 +325,7 @@ export default function PartnerManagement() {
                       <span className="text-[10px] text-zinc-400 font-mono">/</span>
                       <input 
                         type="text" 
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
                         placeholder={formData.loginId || "아이디 입력 시 자동 설정"}
                         value={formData.subdomain}
                         onChange={(e) => setFormData({...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '')})}
@@ -335,7 +335,7 @@ export default function PartnerManagement() {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">파트너 상태</label>
                     <select 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                       value={formData.status}
                       onChange={(e) => setFormData({...formData, status: e.target.value})}
                     >
@@ -356,7 +356,7 @@ export default function PartnerManagement() {
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">파트너명 (회사명)</label>
                     <input 
                       type="text" 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                     />
@@ -365,7 +365,7 @@ export default function PartnerManagement() {
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">담당자명</label>
                     <input 
                       type="text" 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
                       value={formData.managerName}
                       onChange={(e) => setFormData({...formData, managerName: e.target.value})}
                     />
@@ -374,7 +374,7 @@ export default function PartnerManagement() {
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">담당자 연락처</label>
                     <input 
                       type="text" 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
                       value={formData.managerPhone}
                       onChange={(e) => setFormData({...formData, managerPhone: formatPhone(e.target.value)})}
                     />
@@ -383,7 +383,7 @@ export default function PartnerManagement() {
               </section>
 
               {/* Category Selection Section */}
-              <section className="bg-zinc-50 p-6 rounded-2xl border border-zinc-200">
+              <section className="bg-zinc-50 p-6 rounded-lg border border-zinc-200">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-zinc-800 flex items-center gap-2">
                     <CheckSquare size={18} className="text-amber-500" /> 
@@ -403,7 +403,7 @@ export default function PartnerManagement() {
                       <button
                         key={group._id}
                         onClick={() => toggleCategory(group._id)}
-                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                        className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
                           isChecked 
                           ? 'bg-white border-zinc-900 ring-2 ring-zinc-900/5 shadow-md translate-y-[-2px]' 
                           : 'bg-white/50 border-zinc-200 hover:border-zinc-300 grayscale opacity-70'
@@ -441,10 +441,10 @@ export default function PartnerManagement() {
                 )}
               </div>
               <div className="flex gap-3 w-full sm:w-auto">
-                <button onClick={closeModal} className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl border border-zinc-200 bg-white text-zinc-600 font-bold hover:bg-zinc-50 transition-all">취소</button>
+                <button onClick={closeModal} className="flex-1 sm:flex-none px-6 py-3.5 rounded-lg border border-zinc-200 bg-white text-zinc-600 font-bold hover:bg-zinc-50 transition-all">취소</button>
                 <button 
                   onClick={handleSave}
-                  className="flex-1 sm:flex-none px-8 py-3.5 rounded-2xl bg-zinc-900 text-white font-black hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10"
+                  className="flex-1 sm:flex-none px-8 py-3.5 rounded-lg bg-zinc-900 text-white font-black hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10"
                 >
                   저장하기
                 </button>
