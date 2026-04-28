@@ -140,7 +140,7 @@ const FadeIn = ({ children, delay = 0, className = "", ...props }: any) => (
   </motion.div>
 );
 
-const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitted, mainProducts, privacyPolicy }: any) => (
+const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitted, mainProducts, privacyPolicy, availableMethods }: any) => (
   <form className="space-y-8">
     <div className="grid md:grid-cols-2 gap-8">
       <div className="relative">
@@ -1206,8 +1206,8 @@ export default function Landing() {
                     handleSubmit={handleSubmit} 
                     submitting={submitting} 
                     submitted={submitted} 
-                    mainProducts={filteredMainProducts}
                     privacyPolicy={globalSettings?.privacyPolicy}
+                    availableMethods={availableMethods}
                   />
               </FadeIn>
             </div>
