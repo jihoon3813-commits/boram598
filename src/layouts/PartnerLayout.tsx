@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard,
   Users, 
@@ -14,8 +14,16 @@ import { useEffect, useState } from 'react';
 
 export default function PartnerLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [partnerInfo, setPartnerInfo] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      localStorage.removeItem('activePartner');
+      navigate('/partner/login');
+    }
+  };
 
   useEffect(() => {
     const info = localStorage.getItem('activePartner');
@@ -97,7 +105,10 @@ export default function PartnerLayout() {
                <span>분양몰 바로가기</span>
              </Link>
            )}
-          <button className="flex items-center gap-3 px-3 py-2 w-full text-zinc-400 hover:text-white transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 w-full text-zinc-400 hover:text-white transition-colors"
+          >
             <LogOut size={20} />
             <span>로그아웃</span>
           </button>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import ProductSection, { ProductCatalogModal } from '../components/ProductSection';
@@ -37,8 +37,9 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { partnerId } = useParams();
   const [searchParams] = useSearchParams();
-  const partnerName = searchParams.get('partner');
+  const partnerName = partnerId || searchParams.get('partner');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -218,6 +219,9 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
           </button>
         ))}
       </div>
+      {availableMethods.length === 0 && (
+        <p className="text-[10px] text-red-500 font-bold ml-1">선택 가능한 결제 방식이 없습니다.</p>
+      )}
     </div>
 
     <div className="flex items-start gap-3 bg-zinc-100 p-4 rounded-xl border border-zinc-200">
@@ -241,8 +245,9 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
 );
 
 export default function Landing() {
+  const { partnerId } = useParams();
   const [searchParams] = useSearchParams();
-  const partnerName = searchParams.get('partner');
+  const partnerName = partnerId || searchParams.get('partner');
   const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -262,7 +267,8 @@ export default function Landing() {
   const selectedProductObj = allProductsList.find((p: any) => p.name === formData.product);
   const availableMethods = useMemo(() => {
     if (!formData.product || formData.product === "상담 시 선택") return ['60개월 렌탈', '신한 48페이'];
-    return selectedProductObj?.paymentMethods || ['60개월 렌탈', '신한 48페이'];
+    const methods = selectedProductObj?.paymentMethods;
+    return (methods && methods.length > 0) ? methods : ['60개월 렌탈', '신한 48페이'];
   }, [formData.product, selectedProductObj]);
 
   // Auto-select if only one option available
@@ -347,25 +353,53 @@ export default function Landing() {
               className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
             >
               <div className="p-8 md:p-12">
-                <div className="flex justify-between items-center mb-10">
-                  <h3 className="text-2xl md:text-3xl font-black text-zinc-900">간편 상담 신청</h3>
-                  <button 
-                    onClick={() => setIsModalOpen(false)}
-                    className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 transition-colors"
+                {submitted ? (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-10"
                   >
-                    <X size={20} />
-                  </button>
-                </div>
-                <ContactForm 
-                  formData={formData} 
-                  setFormData={setFormData} 
-                  handleSubmit={handleSubmit} 
-                  submitting={submitting} 
-                  submitted={submitted} 
-                  mainProducts={filteredMainProducts}
-                  privacyPolicy={globalSettings?.privacyPolicy}
-                  availableMethods={availableMethods}
-                />
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-white mx-auto mb-8 shadow-lg shadow-green-500/20">
+                      <Check size={40} />
+                    </div>
+                    <h3 className="text-3xl font-black text-zinc-900 mb-4">상담 신청이 완료되었습니다!</h3>
+                    <p className="text-zinc-500 mb-10 font-light leading-relaxed">
+                      전문 상담원이 확인 후 <br />
+                      빠른 시일 내에 연락드리겠습니다.
+                    </p>
+                    <button 
+                      onClick={() => {
+                        setSubmitted(false);
+                        setIsModalOpen(false);
+                      }}
+                      className="px-10 py-4 bg-zinc-900 text-white font-bold rounded-2xl hover:bg-zinc-800 transition-all shadow-xl"
+                    >
+                      확인
+                    </button>
+                  </motion.div>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center mb-10">
+                      <h3 className="text-2xl md:text-3xl font-black text-zinc-900">간편 상담 신청</h3>
+                      <button 
+                        onClick={() => setIsModalOpen(false)}
+                        className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                    <ContactForm 
+                      formData={formData} 
+                      setFormData={setFormData} 
+                      handleSubmit={handleSubmit} 
+                      submitting={submitting} 
+                      submitted={submitted} 
+                      mainProducts={filteredMainProducts}
+                      privacyPolicy={globalSettings?.privacyPolicy}
+                      availableMethods={availableMethods}
+                    />
+                  </>
+                )}
               </div>
             </motion.div>
           </div>

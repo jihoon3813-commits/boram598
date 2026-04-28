@@ -98,6 +98,7 @@ export default function App() {
           <Route path="customers" element={<ErrorBoundary><CustomerManagement /></ErrorBoundary>} />
           <Route path="settings" element={<ErrorBoundary><PartnerSettings /></ErrorBoundary>} />
         </Route>
+        <Route path="/:partnerId" element={<Landing />} />
       </Routes>
     </Router>
   );

@@ -185,7 +185,7 @@ function ProductCatalogModal({
                     />
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
-                    <h4 className="text-sm font-bold text-zinc-900 line-clamp-2 mb-3 min-h-[2.5rem] leading-tight">
+                    <h4 className="text-sm font-bold text-zinc-900 mb-3 leading-tight">
                       {product.name}
                     </h4>
                     <div className="flex flex-wrap gap-1.5 mt-auto">
@@ -311,7 +311,7 @@ function ProductCard({
           )}
         </div>
         <div className="p-5 flex-1 flex flex-col">
-          <h4 className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-tight mb-2 sm:mb-3 min-h-[3rem] sm:min-h-[2.5rem]">
+          <h4 className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-tight mb-2 sm:mb-3">
             {product.name}
           </h4>
           <div className="flex flex-wrap gap-1.5 mt-auto">

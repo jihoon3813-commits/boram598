@@ -69,15 +69,17 @@ export const listMainProducts = query({
       if (visible.length > 0) {
         result.push({ group, products: visible });
         
-        // Collect products that support "신한 48페이"
-        const matching = visible.filter(p => p.paymentMethods?.includes("신한 48페이"));
+        // Collect products that support "신한 48페이" or "48PAY"
+        const matching = visible.filter(p => 
+          p.paymentMethods?.some(m => m.includes("신한 48페이") || m.includes("48PAY"))
+        );
         pay48Products.push(...matching);
       }
     }
 
     // Add a virtual "48Pay" category at the top if there are such products
     if (pay48Products.length > 0) {
-      // Remove duplicates just in case
+      // Remove duplicates and sort
       const unique48Pay = Array.from(new Map(pay48Products.map(p => [p._id, p])).values());
       
       result.unshift({
@@ -87,7 +89,7 @@ export const listMainProducts = query({
           showOnMain: true,
           order: -1,
           fetchUrl: "",
-          displayCount: 99,
+          displayCount: 8,
           isVirtual: true,
         },
         products: unique48Pay

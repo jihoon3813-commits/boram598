@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   Users, 
   UserCircle, 
@@ -17,7 +16,15 @@ import {
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      localStorage.removeItem('adminToken');
+      navigate('/admin/login');
+    }
+  };
 
   const menuItems = [
     { name: '고객관리', path: '/admin/customers', icon: <Users size={20} /> },
@@ -87,7 +94,10 @@ export default function AdminLayout() {
           </ul>
         </nav>
         <div className="p-4 border-t border-zinc-800">
-          <button className="flex items-center gap-3 px-3 py-2 w-full text-zinc-400 hover:text-white transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 w-full text-zinc-400 hover:text-white transition-colors"
+          >
             <LogOut size={20} />
             <span>로그아웃</span>
           </button>
