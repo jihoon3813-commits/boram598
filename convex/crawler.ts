@@ -50,7 +50,7 @@ export const fetchProductsFromUrlV3 = action({
                 "Referer": url,
                 "Origin": siteBaseUrl
               },
-              timeout: 15000
+              timeout: 30000
             }
           );
           console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
