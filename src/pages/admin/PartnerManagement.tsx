@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square, Trash2 } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
@@ -19,12 +19,24 @@ export default function PartnerManagement() {
   const [formData, setFormData] = useState<any>({
     loginId: '',
     password: '',
+    confirmPassword: '',
     name: '',
     managerName: '',
     managerPhone: '',
-    status: '정상',
+    status: 'active',
+    subdomain: '',
     visibleProductGroupIds: []
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Formatting helpers
+  const formatPhone = (val: string) => {
+    const raw = val.replace(/[^0-9]/g, '').slice(0, 11);
+    if (raw.length <= 3) return raw;
+    if (raw.length <= 7) return `${raw.slice(0, 3)}-${raw.slice(3, 7)}`;
+    return `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7)}`;
+  };
 
   const openModal = (partner: any) => {
     if (partner) {
@@ -39,14 +51,16 @@ export default function PartnerManagement() {
       setFormData({
         loginId: '',
         password: '',
+        confirmPassword: '',
         name: '',
         managerName: '',
         managerPhone: '',
-        status: '정상',
+        status: 'active',
         subdomain: '',
         visibleProductGroupIds: []
       });
     }
+    setShowPassword(false);
     setIsModalOpen(true);
   };
 
@@ -59,8 +73,9 @@ export default function PartnerManagement() {
 
       const payload = {
         ...formData,
-        subdomain: formData.loginId, // Default subdomain to loginId
+        subdomain: formData.subdomain || formData.loginId,
       };
+      delete payload.confirmPassword;
 
       if (selectedPartner) {
         // Update
@@ -264,16 +279,58 @@ export default function PartnerManagement() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">비밀번호 {selectedPartner && '(변경 시에만)'}</label>
+                    <div className="relative">
+                      <input 
+                        type={showPassword ? "text" : "password"}
+                        id="partner-password-field"
+                        name="partner-password-field"
+                        autoComplete="new-password"
+                        placeholder={selectedPartner ? "변경할 비밀번호 입력" : "비밀번호 입력"} 
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all pr-12" 
+                        value={formData.password}
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">비밀번호 확인</label>
                     <input 
                       type="password" 
-                      id="partner-password-field"
-                      name="partner-password-field"
                       autoComplete="new-password"
-                      placeholder={selectedPartner ? "변경할 비밀번호 입력" : "비밀번호 입력"} 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
-                      value={formData.password}
-                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      placeholder="비밀번호 다시 입력" 
+                      className={`w-full bg-zinc-50 border rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all ${
+                        formData.confirmPassword && formData.password !== formData.confirmPassword 
+                          ? 'border-red-500' 
+                          : formData.confirmPassword && formData.password === formData.confirmPassword 
+                            ? 'border-green-500' 
+                            : 'border-zinc-200'
+                      }`} 
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     />
+                    {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                      <p className="text-[8px] text-red-500 mt-1 ml-1 font-bold">비밀번호가 일치하지 않습니다.</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">서브도메인 (분양몰 주소)</label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-zinc-400 font-mono">/</span>
+                      <input 
+                        type="text" 
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
+                        placeholder={formData.loginId || "아이디 입력 시 자동 설정"}
+                        value={formData.subdomain}
+                        onChange={(e) => setFormData({...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '')})}
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">파트너 상태</label>
@@ -319,7 +376,7 @@ export default function PartnerManagement() {
                       type="text" 
                       className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all" 
                       value={formData.managerPhone}
-                      onChange={(e) => setFormData({...formData, managerPhone: e.target.value})}
+                      onChange={(e) => setFormData({...formData, managerPhone: formatPhone(e.target.value)})}
                     />
                   </div>
                 </div>
