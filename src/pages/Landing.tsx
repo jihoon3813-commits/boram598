@@ -461,7 +461,7 @@ export default function Landing() {
               alt="Boram Sangjo Logo" 
               className="h-12 w-auto mb-6 opacity-80"
             />
-            <h2 className="text-xs font-bold text-zinc-500 tracking-widest uppercase mb-4">Investment Plan (Light)</h2>
+
             <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
               당신의 라이프스타일에 <br className="md:hidden" /> 맞춘 설계
             </h3>
