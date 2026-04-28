@@ -115,3 +115,10 @@ export const create = mutation({
     return await ctx.db.insert("partners", args);
   },
 });
+
+export const remove = mutation({
+  args: { id: v.id("partners") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
+  },
+});

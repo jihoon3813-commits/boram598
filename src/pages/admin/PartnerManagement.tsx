@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, X, ExternalLink, ShieldCheck, CheckSquare, Square, Trash2 } from 'lucide-react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
@@ -8,6 +8,7 @@ export default function PartnerManagement() {
   const productGroups = useQuery(api.products.listGroups);
   const createPartner = useMutation(api.partners.create);
   const updatePartner = useMutation(api.partners.update);
+  const removePartner = useMutation(api.partners.remove);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState<any>(null);
@@ -80,6 +81,19 @@ export default function PartnerManagement() {
       closeModal();
     } catch (err: any) {
       alert(err.message || '저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedPartner) return;
+    if (!confirm('이 파트너를 영구 삭제하시겠습니까? 관련 데이터가 모두 삭제됩니다.')) return;
+    
+    try {
+      await removePartner({ id: selectedPartner._id });
+      alert('삭제되었습니다.');
+      closeModal();
+    } catch (err: any) {
+      alert(err.message || '삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -359,7 +373,16 @@ export default function PartnerManagement() {
             </div>
             
             <div className="p-6 lg:p-8 border-t border-zinc-100 bg-zinc-50/50 flex justify-between items-center">
-              <div />
+              <div>
+                {selectedPartner && (
+                  <button 
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 text-red-500 font-bold hover:text-red-700 transition-all text-sm px-4 py-2 rounded-xl hover:bg-red-50"
+                  >
+                    <Trash2 size={16} /> 파트너 영구 삭제
+                  </button>
+                )}
+              </div>
               <div className="flex gap-3 w-full sm:w-auto">
                 <button onClick={closeModal} className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl border border-zinc-200 bg-white text-zinc-600 font-bold hover:bg-zinc-50 transition-all">취소</button>
                 <button 

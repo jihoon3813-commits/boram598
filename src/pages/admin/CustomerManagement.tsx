@@ -584,8 +584,21 @@ export default function CustomerManagement() {
               </div>
            </div>
 
-           <div className="text-xs font-bold text-zinc-400">
-              검색 결과: <span className="text-zinc-900">{displayCustomers.length}</span>건
+           <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4 bg-zinc-50 px-4 py-2 rounded-xl border border-zinc-100 shadow-inner">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="text-[10px] font-black text-zinc-600">신규등록(24h)</span>
+                </div>
+                <div className="w-px h-2 bg-zinc-200" />
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-[10px] font-black text-zinc-600">정보수정(24h)</span>
+                </div>
+              </div>
+              <div className="text-xs font-bold text-zinc-400">
+                검색 결과: <span className="text-zinc-900">{displayCustomers.length}</span>건
+              </div>
            </div>
         </div>
       </div>
@@ -607,13 +620,7 @@ export default function CustomerManagement() {
                   </th>
                 )}
                 <th className="py-5 px-8">No.</th>
-                <th className="py-5 px-8 relative">
-                  등록일
-                  <div className="absolute top-1 right-2 flex items-center gap-3 scale-[0.8] origin-right opacity-60">
-                    <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" /> <span className="text-[9px] font-black">신규등록(24h)</span></div>
-                    <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500" /> <span className="text-[9px] font-black">정보수정(24h)</span></div>
-                  </div>
-                </th>
+                <th className="py-5 px-8">등록일</th>
                 <th className="py-5 px-8">파트너</th>
                 <th className="py-5 px-8">고객명</th>
                 <th className="py-5 px-8">연락처</th>
