@@ -537,7 +537,8 @@ export default function Landing() {
                     <p className="font-bold text-zinc-900">61~200회 (만기)</p>
                     <p className="text-sm text-zinc-500 mt-1">상조 부금 납입 및 자산화</p>
                   </div>
-                  <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-xl -mt-4 shadow-lg shadow-amber-500/30 flex items-center gap-2">
+                  <div className="absolute right-0 top-0 text-white text-[10px] font-bold px-4 py-2 rounded-xl -mt-4 shadow-xl flex items-center gap-2 overflow-hidden border border-white/10"
+                       style={{ background: 'linear-gradient(to right, #f59e0b 30%, #09090b 30%)' }}>
                     <RefreshCcw size={14} /> 100% 환급 달성
                   </div>
                 </div>
@@ -622,7 +623,7 @@ export default function Landing() {
              {/* Benefit 5 */}
              <FadeIn delay={0.5} className="md:col-span-3 lg:col-span-4 bg-zinc-900 rounded-[2rem] border border-zinc-800 p-8 flex flex-col justify-between overflow-hidden relative group">
                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
-               <img src="https://images.unsplash.com/photo-1533421644341-4347702ec7ee?auto=format&fit=crop&q=80&w=600" alt="Trust" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
+               <img src="https://images.unsplash.com/photo-1523292562811-8fa7962a78c8?auto=format&fit=crop&q=80&w=600" alt="Trust" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" />
                <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white relative z-20 border border-white/10">
                   <Award size={24} />
                </div>
