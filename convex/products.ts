@@ -69,9 +69,10 @@ export const listMainProducts = query({
       if (visible.length > 0) {
         result.push({ group, products: visible });
         
-        // Collect products that support "신한 48페이" or "48PAY"
+        // Collect products that exclusively support "신한" related payment methods
         const matching = visible.filter(p => 
-          p.paymentMethods?.some(m => m.includes("신한 48페이") || m.includes("48PAY"))
+          p.paymentMethods?.some(m => m.includes("신한 48페이") || m.includes("48PAY")) &&
+          p.paymentMethods?.every(m => m.includes("신한") || m.includes("48PAY"))
         );
         pay48Products.push(...matching);
       }
