@@ -430,8 +430,8 @@ export default function Landing() {
               </div>
               <ul className="space-y-8 flex-1 relative z-10">
                 {[
-                  { title: "안전한 자산 형성", desc: "납입하는 금액 전체가 보람상조를 통한 자산으로 저축됩니다." },
-                  { title: "최신 가전 선이자 지급", desc: "저축에 대한 선이자 개념으로 최신 가전을 즉시 제공합니다." },
+                  { title: "안전한 자산 형성", desc: "납입하는 금액 전체가 보람상조를 통한 자산으로 유지됩니다." },
+                  { title: "최신 가전 렌탈료 전액 지원", desc: "가입 후 받으신 가전제품의 렌탈료를 상조 만기 시 전액 지원해 드립니다." },
                   { title: "100% 전액 환급", desc: "만기 유지 시 지금까지 낸 금액을 1원도 빠짐없이 돌려드립니다." }
                 ].map((item, i) => (
                   <li key={i} className="flex gap-4 items-start">
@@ -445,7 +445,7 @@ export default function Landing() {
               </ul>
               <div className="mt-12 pt-8 border-t border-zinc-800 relative z-10">
                 <p className="text-amber-500/70 font-bold uppercase tracking-widest text-sm mb-2">Result</p>
-                <p className="text-3xl font-black text-amber-500">자산 형성 + 무료 가전</p>
+                <p className="text-3xl font-black text-amber-500">자산 형성 + 가전 혜택</p>
               </div>
             </FadeIn>
           </div>
