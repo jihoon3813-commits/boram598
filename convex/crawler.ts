@@ -26,20 +26,39 @@ export const fetchProductsFromUrlV3 = action({
 
       if (isLifenuri) {
         const parts = url.split('/');
-        const themesNo = parseInt(parts[parts.length - 1]) - 1;
+        let themesNo = parseInt(parts[parts.length - 1]);
+        if (url.includes("themesgroup")) {
+          // themesgroup/140 usually maps to themes/139 for the list API
+          themesNo = themesNo - 1;
+        }
+        
         console.log(`Lifenuri Fetch: themesNo=${themesNo}, url=${url}`);
-        const resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
-          `actions=goods&themes_no=${themesNo}`, 
-          {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-              "X-Requested-With": "XMLHttpRequest",
-              "Referer": url
+        
+        const params = new URLSearchParams();
+        params.append('actions', 'goods');
+        params.append('themes_no', themesNo.toString());
+
+        let resp;
+        try {
+          resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
+            params.toString(), 
+            {
+              headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "X-Requested-With": "XMLHttpRequest",
+                "Referer": url,
+                "Origin": siteBaseUrl
+              },
+              timeout: 15000
             }
-          }
-        );
-        console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
+          );
+          console.log(`Lifenuri Resp: status=${resp.status}, keys=${Object.keys(resp.data || {}).join(',')}`);
+        } catch (e: any) {
+          const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
+          throw new Error(`Lifenuri API Error: ${e.message} | Data: ${errorData}`);
+        }
+        
         goods = (resp.data.themeslistrow || []).map((item: any) => ({
           g_no: item.goods_code,
           name: item.goods_title,
