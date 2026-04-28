@@ -32,6 +32,7 @@ const customerArgs = {
   payMethod: v.optional(v.string()),
   cancelDate: v.optional(v.string()),
   withdrawDate: v.optional(v.string()),
+  paymentType: v.optional(v.string()),
 };
 
 export const add = mutation({
@@ -100,6 +101,7 @@ export const updateCustomerRecord = mutation({
     payMethod: v.optional(v.string()),
     cancelDate: v.optional(v.string()),
     withdrawDate: v.optional(v.string()),
+    paymentType: v.optional(v.string()),
     memo: v.optional(v.string()),
     updatedBy: v.string(),
   },

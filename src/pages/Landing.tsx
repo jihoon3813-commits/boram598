@@ -197,6 +197,29 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
       <ChevronRight className="absolute right-4 top-1/2 mt-2 -translate-y-1/2 text-zinc-400 rotate-90 pointer-events-none" />
     </div>
 
+    <div className="space-y-3">
+      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">결제 방식 선택 (필수)</label>
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { id: 'rental', label: '60개월 렌탈', value: '60개월 렌탈' },
+          { id: 'pay48', label: '신한 48페이', value: '신한 48페이' }
+        ].map((type) => (
+          <button
+            key={type.id}
+            type="button"
+            onClick={() => setFormData({ ...formData, paymentType: type.value })}
+            className={`py-4 rounded-xl text-sm font-bold border-2 transition-all ${
+              formData.paymentType === type.value
+                ? 'border-zinc-900 bg-zinc-900 text-white shadow-lg'
+                : 'border-zinc-100 bg-zinc-50 text-zinc-500 hover:border-zinc-200'
+            }`}
+          >
+            {type.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
     <div className="flex items-start gap-3 bg-zinc-100 p-4 rounded-xl border border-zinc-200">
       <input type="checkbox" id="privacy" className="mt-1 w-5 h-5 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900" defaultChecked />
       <label htmlFor="privacy" className="text-xs text-zinc-500 leading-relaxed font-light cursor-pointer select-none">
@@ -220,7 +243,7 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
 export default function Landing() {
   const [searchParams] = useSearchParams();
   const partnerName = searchParams.get('partner');
-  const [formData, setFormData] = useState({ name: '', phone: '', product: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -243,6 +266,7 @@ export default function Landing() {
     if (!formData.name.trim()) { alert('이름을 입력해주세요.'); return; }
     if (formData.phone.replace(/[^0-9]/g, '').length < 10) { alert('연락처를 정확히 입력해주세요.'); return; }
     if (!formData.product) { alert('희망 품목을 선택해주세요.'); return; }
+    if (!formData.paymentType) { alert('결제 방식을 선택해주세요.'); return; }
     setSubmitting(true);
     try {
       await addCustomer({
@@ -250,14 +274,15 @@ export default function Landing() {
         phone: formData.phone,
         status: '상담대기',
         productId: formData.product,
-        productName: formData.product, // Ensure product name is recorded for display
+        productName: formData.product,
+        paymentType: formData.paymentType,
         partnerId: activePartner?._id,
         partnerName: activePartner?.name || '본사직영',
         partnerLoginId: activePartner?.loginId || 'admin', // Ensure login ID is recorded for display
       });
       alert('상담 신청이 완료되었습니다! 빠른 시일 내 연락드리겠습니다.');
       setIsModalOpen(false);
-      setFormData({ name: '', phone: '', product: '' });
+      setFormData({ name: '', phone: '', product: '', paymentType: '' });
       setSubmitted(false);
     } catch (err) {
       console.error(err);

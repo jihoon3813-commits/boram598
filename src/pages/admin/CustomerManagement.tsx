@@ -78,18 +78,9 @@ export default function CustomerManagement() {
 
   
   // Registration Form States
-  const [regForm, setRegForm] = useState({
-    partnerId: '',
-    name: '',
-    phone: '',
-    dob: '',
-    gender: '남',
-    categoryId: '',
-    productId: '',
-    address: '',
-    detailAddress: '',
-    preferredTime: '',
-    note: ''
+  const [regForm, setRegForm] = useState({ 
+    name: '', phone: '', dob: '', gender: '남', address: '', detailAddress: '', 
+    partnerId: '', categoryId: '', productId: '', preferredTime: '', note: '', paymentType: '' 
   });
 
   // Filter & Search States
@@ -264,37 +255,22 @@ export default function CustomerManagement() {
   };
 
   const addToPending = () => {
-    if (!regForm.name || !regForm.phone) {
-      alert("고객명과 연락처는 필수입니다.");
-      return;
-    }
-    
-    const partner = partners?.find(p => p._id === regForm.partnerId) || partnerInfo;
-    const category = productGroups?.find(g => g._id === regForm.categoryId);
-    const product = allProducts?.find(p => p._id === regForm.productId);
-    const kstNow = getKSTTimestamp();
+    if (!regForm.name || !regForm.phone) { alert("이름과 연락처는 필수입니다."); return; }
+    if (!regForm.paymentType) { alert("결제 방식을 선택해주세요."); return; }
 
-    const newItem = {
+    const selectedPartner = partners?.find(p => p._id === regForm.partnerId);
+    const selectedCategory = productGroups?.find(g => g._id === regForm.categoryId);
+    const selectedProduct = allProducts?.find(p => p._id === regForm.productId);
+
+    setPendingList([...pendingList, {
       ...regForm,
-      partnerId: regForm.partnerId || undefined,
-      categoryId: regForm.categoryId || undefined,
-      productId: regForm.productId || undefined,
-      partnerName: partner?.name || '본사직영',
-      partnerLoginId: partner?.loginId || 'admin',
-      categoryName: category?.name || '',
-      productName: product?.name || '',
-      status: '상담대기',
-      regDate: kstNow,
-      statusHistory: [{
-        status: '상담대기',
-        updatedAt: kstNow,
-        updatedBy: isPartnerAdmin ? (partnerInfo?.name || 'partner') : 'admin',
-        memo: '시스템 등록'
-      }]
-    };
-
-    setPendingList(prev => [...prev, newItem]);
-    resetForm();
+      partnerName: selectedPartner?.name || '본사직영',
+      partnerLoginId: selectedPartner?.loginId || 'admin',
+      categoryName: selectedCategory?.name,
+      productName: selectedProduct?.name,
+      status: '상담대기'
+    }]);
+    setRegForm({ name: '', phone: '', dob: '', gender: '남', address: '', detailAddress: '', partnerId: isPartnerAdmin ? (partnerInfo?._id || '') : '', categoryId: '', productId: '', preferredTime: '', note: '', paymentType: '' });
   };
 
   const resetForm = () => {
@@ -307,36 +283,40 @@ export default function CustomerManagement() {
       detailAddress: '',
       productId: '',
       preferredTime: '',
-      note: ''
+      note: '',
+      paymentType: ''
     }));
   };
 
   const directRegister = async () => {
-    if (!regForm.name || !regForm.phone) {
-      alert("고객명과 연락처는 필수입니다.");
-      return;
-    }
+    if (!regForm.name || !regForm.phone) { alert("이름과 연락처는 필수입니다."); return; }
+    if (!regForm.paymentType) { alert("결제 방식을 선택해주세요."); return; }
     
     try {
-      const partner = partners?.find(p => p._id === regForm.partnerId) || partnerInfo;
-      const category = productGroups?.find(g => g._id === regForm.categoryId);
-      const product = allProducts?.find(p => p._id === regForm.productId);
-      const kstNow = getKSTTimestamp();
+      const selectedPartner = partners?.find(p => p._id === regForm.partnerId) || (isPartnerAdmin ? partnerInfo : null);
+      const selectedCategory = productGroups?.find(g => g._id === regForm.categoryId);
+      const selectedProduct = allProducts?.find(p => p._id === regForm.productId);
 
-      const customerData = {
-        ...regForm,
-        partnerId: regForm.partnerId || undefined,
-        categoryId: regForm.categoryId || undefined,
-        productId: regForm.productId || undefined,
-        partnerName: partner?.name || '본사직영',
-        partnerLoginId: partner?.loginId || 'admin',
-        categoryName: category?.name || '',
-        productName: product?.name || '',
-        status: '상담대기',
-        regDate: kstNow,
-      };
-
-      await addCustomerBatch({ customers: [customerData as any] });
+      await addCustomerBatch({
+        customers: [{
+          name: regForm.name,
+          phone: regForm.phone,
+          dob: regForm.dob,
+          gender: regForm.gender,
+          address: regForm.address,
+          detailAddress: regForm.detailAddress,
+          partnerId: (regForm.partnerId || (isPartnerAdmin ? partnerInfo?._id : undefined)) as any,
+          partnerName: selectedPartner?.name || '본사직영',
+          partnerLoginId: selectedPartner?.loginId || 'admin',
+          categoryId: regForm.categoryId,
+          categoryName: selectedCategory?.name,
+          productId: regForm.productId,
+          productName: selectedProduct?.name,
+          paymentType: regForm.paymentType,
+          status: '상담대기',
+          note: regForm.note,
+        }]
+      });
       alert("등록되었습니다.");
       resetForm();
       setIsRegModalOpen(false);
@@ -636,7 +616,8 @@ export default function CustomerManagement() {
                 <th className="py-5 px-8">파트너</th>
                 <th className="py-5 px-8">고객명</th>
                 <th className="py-5 px-8">연락처</th>
-                <th className="py-5 px-8">신청품목</th>
+                <th className="py-5 px-8 text-left">상품</th>
+                <th className="py-5 px-8 text-left">결제방식</th>
                 <th className="py-5 px-8 text-center">진행상태</th>
                 <th className="py-5 px-8 text-right">관리</th>
               </tr>
@@ -670,6 +651,15 @@ export default function CustomerManagement() {
                   <td className="py-5 px-8">
                     <span className="text-zinc-900 font-bold">{customer.categoryName || '-'}</span>
                     {customer.productName && <span className="text-zinc-400 ml-1 text-xs">({customer.productName})</span>}
+                  </td>
+                  <td className="py-5 px-8">
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${
+                      customer.paymentType === '신한 48페이' 
+                        ? 'bg-blue-50 text-blue-600 border border-blue-100' 
+                        : 'bg-amber-50 text-amber-600 border border-amber-100'
+                    }`}>
+                      {customer.paymentType || '60개월 렌탈'}
+                    </span>
                   </td>
                   <td className="py-5 px-8 text-center">
                     <span className={`px-4 py-1.5 rounded-full text-[11px] font-black shadow-sm ${
@@ -802,6 +792,20 @@ export default function CustomerManagement() {
                         <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">결제 방식 *</label>
+                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
+                      {['60개월 렌탈', '신한 48페이'].map(pt => (
+                        <button 
+                          key={pt}
+                          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${regForm.paymentType === pt ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
+                          onClick={() => setRegForm({...regForm, paymentType: pt})}
+                        >
+                          {pt}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                </div>
 
@@ -1032,6 +1036,22 @@ function CustomerDetailModal({
                   ))}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase flex items-center gap-1">
+                      <CreditCard size={16} /> 결제 방식 (렌탈/48페이)
+                    </label>
+                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
+                      {['60개월 렌탈', '신한 48페이'].map(pt => (
+                        <button 
+                          key={pt}
+                          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${localData.paymentType === pt ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:bg-zinc-100'}`}
+                          onClick={() => setLocalData({...localData, paymentType: pt})}
+                        >
+                          {pt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase flex items-center gap-1">
                       <CreditCard size={16} /> 납입방법
                     </label>
                     <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
@@ -1212,6 +1232,20 @@ function CustomerDetailModal({
                       <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">파트너 ID</p>
                       <p className="text-xl font-black">{customer.partnerLoginId || 'admin'}</p>
                    </div>
+                   <div className="space-y-2">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">결제 방식 *</label>
+                    <div className="flex bg-zinc-50 border border-zinc-200 rounded-2xl p-1">
+                      {['60개월 렌탈', '신한 48페이'].map(pt => (
+                        <button 
+                          key={pt}
+                          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${regForm.paymentType === pt ? 'bg-zinc-900 text-white shadow-lg' : 'text-zinc-500 hover:bg-zinc-100'}`}
+                          onClick={() => setRegForm({...regForm, paymentType: pt})}
+                        >
+                          {pt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </section>
 

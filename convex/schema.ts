@@ -26,6 +26,7 @@ export default defineSchema({
     payMethod: v.optional(v.string()), // 납입방법 (카드/계좌이체)
     cancelDate: v.optional(v.string()), // 해약처리
     withdrawDate: v.optional(v.string()), // 청약철회
+    paymentType: v.optional(v.string()), // 결제방식 (60개월 렌탈 / 신한 48페이)
     updatedAt: v.optional(v.string()), // 최근 수정일
     statusHistory: v.array(v.object({
       status: v.string(),
