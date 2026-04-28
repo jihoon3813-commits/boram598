@@ -89,6 +89,23 @@ function SortableProductItem({ product, onUpdate, onDelete, onEdit }: { product:
         <button 
           onClick={() => {
             const methods = [...(product.paymentMethods || [])];
+            const hasRental = methods.includes("60개월 렌탈");
+            const newMethods = hasRental 
+              ? methods.filter(m => m !== "60개월 렌탈")
+              : [...methods, "60개월 렌탈"];
+            onUpdate(product._id, { paymentMethods: newMethods });
+          }}
+          className={`px-2 lg:px-3 py-2 rounded-lg text-[9px] lg:text-[10px] font-black transition-all ${
+            product.paymentMethods?.includes("60개월 렌탈") 
+              ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
+              : 'bg-zinc-100 text-zinc-400 hover:bg-zinc-200'
+          }`}
+        >
+          60개월
+        </button>
+        <button 
+          onClick={() => {
+            const methods = [...(product.paymentMethods || [])];
             const has48Pay = methods.includes("신한 48페이");
             const newMethods = has48Pay 
               ? methods.filter(m => m !== "신한 48페이")
