@@ -64,7 +64,7 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
       ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-zinc-200 py-4 shadow-sm' : 'bg-transparent py-6'}
       ${(visible || isOpen) ? 'translate-y-0' : '-translate-y-full md:translate-y-0'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-3">
           <img 
             src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
             alt="Logo" 
@@ -81,7 +81,7 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
         </div>
 
         <div className="flex items-center gap-4">
-          {!partnerName && (
+          {!partnerId && (
             <Link to="/partner-apply" className="hidden sm:flex items-center gap-2 bg-zinc-800 text-white px-4 py-2.5 rounded-full text-sm font-bold hover:bg-zinc-700 transition-all">
               파트너 신청
             </Link>
@@ -113,7 +113,7 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
               <button onClick={() => { setIsOpen(false); onProductsClick(); }} className="text-zinc-800 font-medium">가전제품안내</button>
               <a href="#benefits" onClick={() => setIsOpen(false)} className="text-zinc-800 font-medium">핵심혜택</a>
               <a href="#conversion" onClick={() => setIsOpen(false)} className="text-zinc-800 font-medium">프리미엄전환</a>
-              {!partnerName && <Link to="/partner-apply" onClick={() => setIsOpen(false)} className="text-zinc-800 font-medium">파트너 신청</Link>}
+              {!partnerId && <Link to="/partner-apply" onClick={() => setIsOpen(false)} className="text-zinc-800 font-medium">파트너 신청</Link>}
               <button 
                 onClick={() => { setIsOpen(false); onContactClick(); }}
                 className="bg-zinc-900 text-white py-3 rounded-xl font-bold"
@@ -246,16 +246,14 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
 
 export default function Landing() {
   const { partnerId } = useParams();
-  const [searchParams] = useSearchParams();
-  const partnerName = partnerId || searchParams.get('partner');
   const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   
-  const activePartner = useQuery(api.partners.getByLoginId, partnerName ? { loginId: partnerName } : "skip");
-  const mainProducts = useQuery(api.products.listMainProducts, partnerName ? (activePartner ? { partnerId: activePartner._id } : "skip") : {});
+  const activePartner = useQuery(api.partners.getByLoginId, partnerId ? { loginId: partnerId } : "skip");
+  const mainProducts = useQuery(api.products.listMainProducts, partnerId ? (activePartner ? { partnerId: activePartner._id } : "skip") : {});
   const globalSettings = useQuery(api.settings.get);
   const addCustomer = useMutation(api.customers.add);
 
@@ -1255,7 +1253,7 @@ export default function Landing() {
       <footer className="bg-zinc-950 text-zinc-500 py-20 border-t border-zinc-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-2 group">
               <img 
                 src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
                 alt="Logo" 

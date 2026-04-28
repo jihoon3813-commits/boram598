@@ -234,7 +234,7 @@ export default function PartnerManagement() {
                 {selectedPartner && (
                   <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
                     <a 
-                      href={`/?partner=${selectedPartner.loginId}`} 
+                      href={`/${selectedPartner.loginId}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-black text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition-all shadow-sm whitespace-nowrap"
