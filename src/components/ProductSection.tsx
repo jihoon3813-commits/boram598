@@ -12,7 +12,8 @@ import {
   ChevronDown,
   Sparkles,
   Grid3X3,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck
 } from 'lucide-react';
 
 // --- Product Detail Modal ---
@@ -147,12 +148,17 @@ function ProductCatalogModal({
               <button
                 key={group._id}
                 onClick={() => setActiveTab(group._id)}
-                className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all ${
+                className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
                   activeTab === group._id
-                    ? 'bg-zinc-900 text-white shadow-md'
-                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                    ? group.isVirtual 
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                      : 'bg-zinc-900 text-white shadow-md'
+                    : group.isVirtual
+                      ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                      : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
                 }`}
               >
+                {group.isVirtual && <ShieldCheck size={14} />}
                 {group.name}
               </button>
             ))}
@@ -555,14 +561,26 @@ export default function ProductSection({
 
           {/* Product Groups */}
           {filteredMainProducts.map(({ group, products }) => (
-            <div key={group._id} className="mb-20 last:mb-0">
-              <div className="flex items-end justify-between mb-10">
-                <div>
-                  <h4 className="text-2xl md:text-3xl font-black text-zinc-900">{group.name}</h4>
+            <div key={group._id} className={`mb-20 last:mb-0 ${group.isVirtual ? 'bg-blue-50/30 p-8 sm:p-10 rounded-[3rem] border border-blue-100/50 relative overflow-hidden' : ''}`}>
+              {group.isVirtual && (
+                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                  <ShieldCheck size={200} className="text-blue-600" />
+                </div>
+              )}
+              <div className="flex items-end justify-between mb-10 relative z-10">
+                <div className="flex items-center gap-3">
+                  {group.isVirtual && (
+                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                      <ShieldCheck size={24} />
+                    </div>
+                  )}
+                  <h4 className={`text-2xl md:text-3xl font-black ${group.isVirtual ? 'text-blue-900' : 'text-zinc-900'}`}>
+                    {group.name}
+                  </h4>
                 </div>
                 <button
                   onClick={() => handleMoreClick(group._id)}
-                  className="flex items-center gap-1 text-sm font-bold text-zinc-500 hover:text-zinc-900 transition-colors group/btn"
+                  className={`flex items-center gap-1 text-sm font-bold transition-colors group/btn ${group.isVirtual ? 'text-blue-600 hover:text-blue-800' : 'text-zinc-500 hover:text-zinc-900'}`}
                 >
                   전체보기 <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>

@@ -49,6 +49,8 @@ export const listMainProducts = query({
     }
 
     const result = [];
+    const pay48Products = [];
+
     for (const group of mainGroups) {
       const products = await ctx.db
         .query("products")
@@ -66,8 +68,32 @@ export const listMainProducts = query({
 
       if (visible.length > 0) {
         result.push({ group, products: visible });
+        
+        // Collect products that support "신한 48페이"
+        const matching = visible.filter(p => p.paymentMethods?.includes("신한 48페이"));
+        pay48Products.push(...matching);
       }
     }
+
+    // Add a virtual "48Pay" category at the top if there are such products
+    if (pay48Products.length > 0) {
+      // Remove duplicates just in case
+      const unique48Pay = Array.from(new Map(pay48Products.map(p => [p._id, p])).values());
+      
+      result.unshift({
+        group: {
+          _id: "virtual_48pay" as any,
+          name: "신한 48페이 전용관",
+          showOnMain: true,
+          order: -1,
+          fetchUrl: "",
+          displayCount: 99,
+          isVirtual: true,
+        },
+        products: unique48Pay
+      });
+    }
+
     return result;
   },
 });

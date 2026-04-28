@@ -190,11 +190,9 @@ const ContactForm = ({ formData, setFormData, handleSubmit, submitting, submitte
       >
         <option value="" disabled className="text-zinc-400">원하시는 가전 품목을 선택해주세요</option>
         <option value="상담 시 선택">상담 시 선택</option>
-        {mainProducts?.map(({ products }: any) => 
-          products.map((p: any) => (
-            <option key={p._id} value={p.name}>{p.name}</option>
-          ))
-        )}
+        {Array.from(new Map(mainProducts?.flatMap(({ products }: any) => products).map((p: any) => [p._id, p])).values()).map((p: any) => (
+          <option key={p._id} value={p.name}>{p.name}</option>
+        ))}
       </select>
       <ChevronRight className="absolute right-4 top-1/2 mt-2 -translate-y-1/2 text-zinc-400 rotate-90 pointer-events-none" />
     </div>
