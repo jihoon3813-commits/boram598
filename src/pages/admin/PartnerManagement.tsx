@@ -133,7 +133,7 @@ export default function PartnerManagement() {
       const matchesStatus = filterStatus === '전체' || p.status === targetStatus;
       
       return matchesSearch && matchesStatus;
-    });
+    }).sort((a, b) => b._creationTime - a._creationTime);
   }, [partners, searchQuery, filterStatus]);
 
   const closeModal = () => {
