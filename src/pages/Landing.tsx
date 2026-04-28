@@ -364,6 +364,7 @@ export default function Landing() {
                   submitted={submitted} 
                   mainProducts={filteredMainProducts}
                   privacyPolicy={globalSettings?.privacyPolicy}
+                  availableMethods={availableMethods}
                 />
               </div>
             </motion.div>
@@ -1206,6 +1207,7 @@ export default function Landing() {
                     handleSubmit={handleSubmit} 
                     submitting={submitting} 
                     submitted={submitted} 
+                    mainProducts={filteredMainProducts}
                     privacyPolicy={globalSettings?.privacyPolicy}
                     availableMethods={availableMethods}
                   />
