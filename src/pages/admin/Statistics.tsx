@@ -218,89 +218,99 @@ export default function Statistics() {
           ))}
         </div>
       </motion.div>
-      {/* Detailed Daily Partner Stats with Selection */}
+      {/* Detailed Daily Partner Stats with Sidebar Selection */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm"
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-          <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
-            <Activity className="text-indigo-500" /> 파트너별 상세 실적 추이
-          </h3>
-          
-          {/* Partner Selection Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar max-w-full md:max-w-[60%]">
-            <button
-              onClick={() => setSelectedPartner("전체")}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                selectedPartner === "전체"
-                  ? 'bg-zinc-900 text-white shadow-lg'
-                  : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
-              }`}
-            >
-              전체 보기
-            </button>
-            {stats.byPartner.map((p) => (
+        <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3 mb-8">
+          <Activity className="text-indigo-500" /> 파트너별 상세 실적 추이
+        </h3>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Vertical Partner Sidebar */}
+          <div className="w-full lg:w-64 flex flex-col gap-2">
+            <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-4 mb-2">파트너 목록</div>
+            <div className="flex flex-col gap-1 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               <button
-                key={p.partner}
-                onClick={() => setSelectedPartner(p.partner)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                  selectedPartner === p.partner
-                    ? 'bg-indigo-600 text-white shadow-lg'
-                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                onClick={() => setSelectedPartner("전체")}
+                className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+                  selectedPartner === "전체"
+                    ? 'bg-zinc-900 text-white shadow-lg'
+                    : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100'
                 }`}
               >
-                {p.partner}
+                <span>전체 보기</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${selectedPartner === "전체" ? 'bg-white/20' : 'bg-zinc-200'}`}>
+                  {stats.total}
+                </span>
               </button>
-            ))}
-          </div>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-zinc-50 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                <th className="px-4 py-4 font-black">날짜</th>
-                <th className="px-4 py-4 font-black">파트너</th>
-                <th className="px-4 py-4 font-black text-center">사이트 인입</th>
-                <th className="px-4 py-4 font-black text-center">상담 신청</th>
-                <th className="px-4 py-4 font-black text-center">전환율</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-50">
-              {stats.byDatePartner
-                .filter(row => selectedPartner === "전체" || row.partner === selectedPartner)
-                .map((row, idx) => (
-                <tr key={idx} className="group hover:bg-zinc-50 transition-colors">
-                  <td className="px-4 py-4 text-sm font-medium text-zinc-500">{row.date}</td>
-                  <td className="px-4 py-4">
-                    <span className="text-sm font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{row.partner}</span>
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <span className="text-sm font-bold text-zinc-700">{row.visits.toLocaleString()}회</span>
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <span className="text-sm font-black text-amber-500">{row.applications.toLocaleString()}건</span>
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      (row.applications / (row.visits || 1)) > 0.1 ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-500'
-                    }`}>
-                      {(row.applications / (row.visits || 1) * 100).toFixed(1)}%
-                    </span>
-                  </td>
-                </tr>
+              {stats.byPartner.map((p) => (
+                <button
+                  key={p.partner}
+                  onClick={() => setSelectedPartner(p.partner)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+                    selectedPartner === p.partner
+                      ? 'bg-indigo-600 text-white shadow-lg'
+                      : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100'
+                  }`}
+                >
+                  <span className="truncate mr-2">{p.partner}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${selectedPartner === p.partner ? 'bg-white/20' : 'bg-zinc-200'}`}>
+                    {p.count}
+                  </span>
+                </button>
               ))}
-              {stats.byDatePartner.filter(row => selectedPartner === "전체" || row.partner === selectedPartner).length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-4 py-20 text-center text-zinc-400 font-medium">
-                    해당 파트너의 데이터가 아직 없습니다.
-                  </td>
+            </div>
+          </div>
+
+          {/* Table Area */}
+          <div className="flex-1 overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-zinc-50 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                  <th className="px-4 py-4 font-black">날짜</th>
+                  <th className="px-4 py-4 font-black">파트너</th>
+                  <th className="px-4 py-4 font-black text-center">사이트 인입</th>
+                  <th className="px-4 py-4 font-black text-center">상담 신청</th>
+                  <th className="px-4 py-4 font-black text-center">전환율</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-50">
+                {stats.byDatePartner
+                  .filter(row => selectedPartner === "전체" || row.partner === selectedPartner)
+                  .map((row, idx) => (
+                  <tr key={idx} className="group hover:bg-zinc-50 transition-colors">
+                    <td className="px-4 py-4 text-sm font-medium text-zinc-500">{row.date}</td>
+                    <td className="px-4 py-4">
+                      <span className="text-sm font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{row.partner}</span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="text-sm font-bold text-zinc-700">{row.visits.toLocaleString()}회</span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="text-sm font-black text-amber-500">{row.applications.toLocaleString()}건</span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                        (row.applications / (row.visits || 1)) > 0.1 ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-500'
+                      }`}>
+                        {(row.applications / (row.visits || 1) * 100).toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {stats.byDatePartner.filter(row => selectedPartner === "전체" || row.partner === selectedPartner).length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-20 text-center text-zinc-400 font-medium">
+                      해당 파트너의 데이터가 아직 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </motion.div>
     </div>
