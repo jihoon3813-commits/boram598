@@ -61,7 +61,7 @@ export default function PartnerLayout() {
             <img 
               src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
               alt="Logo" 
-              className="h-5 w-auto brightness-0 invert" 
+              className="h-4 w-auto brightness-0 invert" 
             />
             <div className="mt-1 text-[10px] font-bold text-amber-500 uppercase tracking-widest">파트너 어드민</div>
           </div>
