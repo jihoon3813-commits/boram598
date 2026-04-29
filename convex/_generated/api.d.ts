@@ -10,6 +10,7 @@
 
 import type * as crawler from "../crawler.js";
 import type * as customers from "../customers.js";
+import type * as discord from "../discord.js";
 import type * as migrations from "../migrations.js";
 import type * as partners from "../partners.js";
 import type * as products from "../products.js";
@@ -25,6 +26,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   crawler: typeof crawler;
   customers: typeof customers;
+  discord: typeof discord;
   migrations: typeof migrations;
   partners: typeof partners;
   products: typeof products;

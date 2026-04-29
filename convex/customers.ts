@@ -1,4 +1,5 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
 export const list = query({
@@ -40,7 +41,7 @@ export const add = mutation({
   handler: async (ctx, args) => {
     const nowKST = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().replace('T', ' ').substring(0, 16);
     const regDate = args.regDate || nowKST;
-    return await ctx.db.insert("customers", {
+    const id = await ctx.db.insert("customers", {
       ...args,
       regDate,
       updatedAt: nowKST,
@@ -51,6 +52,19 @@ export const add = mutation({
         updatedBy: "system",
       }],
     });
+
+    // Send Discord notification
+    await ctx.scheduler.runAfter(0, internal.discord.sendConsultationNotification, {
+      regDate,
+      partnerName: args.partnerName,
+      name: args.name,
+      phone: args.phone,
+      productName: args.productName,
+      paymentType: args.paymentType,
+      payMethod: args.payMethod,
+    });
+
+    return id;
   },
 });
 
@@ -70,6 +84,18 @@ export const addBatch = mutation({
           updatedAt: nowKST,
           updatedBy: "system",
         }],
+      });
+
+      // Send Discord notification for each customer (caution: rate limits)
+      // Only send if it's a relatively small batch to be safe, or just send all if needed
+      await ctx.scheduler.runAfter(0, internal.discord.sendConsultationNotification, {
+        regDate,
+        partnerName: data.partnerName,
+        name: data.name,
+        phone: data.phone,
+        productName: data.productName,
+        paymentType: data.paymentType,
+        payMethod: data.payMethod,
       });
     }
   },
