@@ -106,10 +106,12 @@ export const recordVisit = mutation({
     const nowKST = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
     const date = nowKST.toISOString().split('T')[0];
     
+    const pName = args.partnerName || "본사직속";
+    
     const existing = await ctx.db
       .query("visits")
       .withIndex("by_date", (q) => q.eq("date", date))
-      .filter((q) => q.eq(q.field("partnerId"), args.partnerId))
+      .filter((q) => q.eq(q.field("partnerName"), pName))
       .first();
     
     if (existing) {
@@ -118,7 +120,7 @@ export const recordVisit = mutation({
       await ctx.db.insert("visits", {
         date,
         partnerId: args.partnerId,
-        partnerName: args.partnerName,
+        partnerName: pName,
         count: 1,
       });
     }
