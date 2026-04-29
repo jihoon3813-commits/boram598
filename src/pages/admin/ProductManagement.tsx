@@ -342,22 +342,8 @@ export default function ProductManagement() {
       groupMap.get(title)!.push(p);
     });
 
-    // Sort titles with custom priority (English > Numbers > Korean)
-    titles.sort((a, b) => {
-      const getPriority = (s: string) => {
-        if (!s) return 4;
-        const char = s.charAt(0);
-        if (/[a-zA-Z]/.test(char)) return 1;
-        if (/[0-9]/.test(char)) return 2;
-        if (/[ㄱ-ㅎ가-힣]/.test(char)) return 3;
-        return 4;
-      };
-      const pA = getPriority(a);
-      const pB = getPriority(b);
-      if (pA !== pB) return pA - pB;
-      return a.localeCompare(b, 'ko', { numeric: true, sensitivity: 'base' });
-    });
-
+    // The order of groups is determined by the first appearance of a product 
+    // from that group in the 'products' array (which is sorted by 'order').
     return titles.map(title => ({ title, items: groupMap.get(title)! }));
   })();
 
