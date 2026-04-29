@@ -68,7 +68,7 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
           <img 
             src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
             alt="Logo" 
-            className={`h-9 w-auto transition-all duration-500 ${scrolled ? '' : 'brightness-0 invert'}`} 
+            className={`h-6 w-auto transition-all duration-500 ${scrolled ? '' : 'brightness-0 invert'}`} 
           />
         </Link>
         
@@ -1272,7 +1272,7 @@ export default function Landing() {
               <img 
                 src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
                 alt="Logo" 
-                className="h-10 w-auto brightness-0 invert opacity-80" 
+                className="h-8 w-auto brightness-0 invert opacity-80" 
               />
             </Link>
             <div className="flex gap-8 text-sm font-bold tracking-wide">
