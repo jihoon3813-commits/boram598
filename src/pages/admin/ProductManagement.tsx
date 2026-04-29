@@ -364,13 +364,18 @@ export default function ProductManagement() {
       category: formData.get('category') as string || '',
     };
 
-    if (editingProduct) {
-      await updateProduct({ id: editingProduct._id, ...data });
-    } else {
-      await addProduct(data);
+    try {
+      if (editingProduct) {
+        await updateProduct({ id: editingProduct._id, ...data });
+      } else {
+        await addProduct(data);
+      }
+      setIsProductModalOpen(false);
+      setEditingProduct(null);
+    } catch (err: any) {
+      console.error("Failed to save product:", err);
+      alert(`저장 실패: ${err.message || "알 수 없는 오류가 발생했습니다."}`);
     }
-    setIsProductModalOpen(false);
-    setEditingProduct(null);
   };
 
   const activeGroup = groups?.find(g => g._id === selectedGroupId);
@@ -838,6 +843,18 @@ export default function ProductManagement() {
                   name="detailHtml" 
                   defaultValue={editingProduct?.detailHtml}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-xs min-h-[150px] font-mono"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Original Source URL</label>
+                <input 
+                  type="url" 
+                  name="originalUrl" 
+                  required 
+                  defaultValue={editingProduct?.originalUrl}
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm"
+                  placeholder="https://boram.lifenuri.com/..."
                 />
               </div>
 
