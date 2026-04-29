@@ -244,18 +244,19 @@ export default function ProductManagement() {
     if (!confirm('현재 그룹의 모든 제품을 가나다순으로 자동 정렬하시겠습니까?')) return;
 
     const sorted = [...products].sort((a, b) => {
+      const options = { numeric: true, sensitivity: 'base' };
       if (mode === 'brand_category') {
-        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko');
+        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko', options);
         if (brandCompare !== 0) return brandCompare;
-        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko');
+        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko', options);
         if (catCompare !== 0) return catCompare;
-        return (a.name || '').localeCompare(b.name || '', 'ko');
+        return (a.name || '').localeCompare(b.name || '', 'ko', options);
       } else {
-        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko');
+        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko', options);
         if (catCompare !== 0) return catCompare;
-        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko');
+        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko', options);
         if (brandCompare !== 0) return brandCompare;
-        return (a.name || '').localeCompare(b.name || '', 'ko');
+        return (a.name || '').localeCompare(b.name || '', 'ko', options);
       }
     });
 
@@ -322,8 +323,8 @@ export default function ProductManagement() {
       groupMap.get(title)!.push(p);
     });
 
-    // Sort titles alphabetically to keep groups consistent
-    titles.sort((a, b) => a.localeCompare(b, 'ko'));
+    // Sort titles alphabetically to keep groups consistent (Number > English > Korean)
+    titles.sort((a, b) => a.localeCompare(b, 'ko', { numeric: true, sensitivity: 'base' }));
 
     return titles.map(title => ({ title, items: groupMap.get(title)! }));
   })();
