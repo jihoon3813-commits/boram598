@@ -88,4 +88,11 @@ export default defineSchema({
     brand: v.optional(v.string()),
     category: v.optional(v.string()),
   }).index("by_groupId", ["groupId", "order"]).index("by_order", ["order"]),
+
+  visits: defineTable({
+    date: v.string(), // YYYY-MM-DD
+    partnerId: v.optional(v.id("partners")),
+    partnerName: v.optional(v.string()),
+    count: v.number(),
+  }).index("by_date", ["date"]).index("by_partnerId", ["partnerId"]),
 });

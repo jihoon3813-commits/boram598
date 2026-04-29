@@ -23,7 +23,7 @@ export default function Statistics() {
     );
   }
 
-  const maxByDate = Math.max(...stats.byDate.map(d => d.count), 1);
+  const maxVal = Math.max(...stats.byDate.map(d => Math.max(d.count, d.visitCount)), 1);
   const maxByPartner = Math.max(...stats.byPartner.map(p => p.count), 1);
 
   return (
@@ -36,15 +36,12 @@ export default function Statistics() {
           className="bg-white p-6 rounded-[2rem] border border-zinc-100 shadow-sm"
         >
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl">
-              <BarChart3 size={24} />
+            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+              <Activity size={24} />
             </div>
-            <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full flex items-center gap-1">
-              <ArrowUpRight size={12} /> Total
-            </span>
           </div>
-          <h3 className="text-zinc-500 text-sm font-bold">누적 상담신청</h3>
-          <p className="text-3xl font-black text-zinc-900 mt-1">{stats.total.toLocaleString()}건</p>
+          <h3 className="text-zinc-500 text-sm font-bold">누적 사이트 인입</h3>
+          <p className="text-3xl font-black text-zinc-900 mt-1">{stats.totalVisits.toLocaleString()}회</p>
         </motion.div>
 
         <motion.div 
@@ -54,12 +51,15 @@ export default function Statistics() {
           className="bg-white p-6 rounded-[2rem] border border-zinc-100 shadow-sm"
         >
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-              <Users size={24} />
+            <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl">
+              <BarChart3 size={24} />
             </div>
+            <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full flex items-center gap-1">
+              <ArrowUpRight size={12} /> {(stats.total / (stats.totalVisits || 1) * 100).toFixed(1)}%
+            </span>
           </div>
-          <h3 className="text-zinc-500 text-sm font-bold">활성 파트너수</h3>
-          <p className="text-3xl font-black text-zinc-900 mt-1">{stats.byPartner.length.toLocaleString()}곳</p>
+          <h3 className="text-zinc-500 text-sm font-bold">누적 상담신청</h3>
+          <p className="text-3xl font-black text-zinc-900 mt-1">{stats.total.toLocaleString()}건</p>
         </motion.div>
 
         <motion.div 
@@ -100,27 +100,51 @@ export default function Statistics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Date Statistics Chart (CSS Bar Chart) */}
+        {/* Date Statistics Chart */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm"
         >
-          <h3 className="text-xl font-black text-zinc-900 mb-8 flex items-center gap-3">
-            <Calendar className="text-amber-500" /> 일별 상담신청 추이 (최근 30일)
+          <h3 className="text-xl font-black text-zinc-900 mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Calendar className="text-amber-500" /> 일별 추이 (최근 30일)
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-zinc-200" />
+                <span className="text-[10px] font-bold text-zinc-400">인입</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span className="text-[10px] font-bold text-zinc-400">신청</span>
+              </div>
+            </div>
           </h3>
           <div className="h-[300px] flex items-end gap-2 overflow-x-auto pb-4 custom-scrollbar">
             {[...stats.byDate].reverse().map((d, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-2 min-w-[30px]">
-                <div className="relative group w-full flex justify-center items-end h-[240px]">
+              <div key={idx} className="flex-1 flex flex-col items-center gap-2 min-w-[40px]">
+                <div className="relative group w-full flex justify-center items-end h-[240px] gap-[2px]">
+                  {/* Visit Bar */}
                   <motion.div 
                     initial={{ height: 0 }}
-                    animate={{ height: `${(d.count / maxByDate) * 100}%` }}
-                    transition={{ duration: 1, delay: idx * 0.05 }}
-                    className="w-full max-w-[12px] bg-amber-500 rounded-full group-hover:bg-amber-600 transition-colors cursor-pointer relative"
+                    animate={{ height: `${(d.visitCount / maxVal) * 100}%` }}
+                    transition={{ duration: 1, delay: idx * 0.03 }}
+                    className="w-1.5 bg-zinc-100 rounded-t-full group-hover:bg-zinc-200 transition-colors cursor-pointer relative"
                   >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
-                      {d.count}건
+                    <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
+                      인입: {d.visitCount}회
+                    </div>
+                  </motion.div>
+                  {/* Consultation Bar */}
+                  <motion.div 
+                    initial={{ height: 0 }}
+                    animate={{ height: `${(d.count / maxVal) * 100}%` }}
+                    transition={{ duration: 1, delay: idx * 0.05 }}
+                    className="w-1.5 bg-amber-500 rounded-t-full group-hover:bg-amber-600 transition-colors cursor-pointer relative"
+                  >
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-amber-600 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
+                      신청: {d.count}건
                     </div>
                   </motion.div>
                 </div>
@@ -151,12 +175,15 @@ export default function Statistics() {
                     </span>
                     <span className="text-sm font-bold text-zinc-700">{p.partner}</span>
                   </div>
-                  <span className="text-sm font-black text-zinc-900">{p.count}건</span>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs font-medium text-zinc-400">인입 {p.visitCount}회</span>
+                    <span className="text-sm font-black text-zinc-900">신청 {p.count}건</span>
+                  </div>
                 </div>
                 <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: `${(p.count / maxByPartner) * 100}%` }}
+                    animate={{ width: `${(p.count / Math.max(maxByPartner, 1)) * 100}%` }}
                     transition={{ duration: 1, delay: idx * 0.1 }}
                     className={`h-full rounded-full ${idx === 0 ? 'bg-amber-500' : idx === 1 ? 'bg-zinc-700' : idx === 2 ? 'bg-zinc-400' : 'bg-zinc-200'}`}
                   />

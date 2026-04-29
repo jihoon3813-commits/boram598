@@ -248,6 +248,14 @@ export default function Landing() {
   const { partnerId } = useParams();
   const [searchParams] = useSearchParams();
   const partnerName = partnerId || searchParams.get('partner');
+  const recordVisit = useMutation(api.stats.recordVisit);
+
+  useEffect(() => {
+    // Record visit only once per session/mount
+    recordVisit({ 
+      partnerName: partnerName || undefined 
+    }).catch(console.error);
+  }, []);
   const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
