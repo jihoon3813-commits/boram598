@@ -245,13 +245,17 @@ export default function ProductManagement() {
 
     const sorted = [...products].sort((a, b) => {
       if (mode === 'brand_category') {
-        const brandCompare = (a.brand || '').localeCompare(b.brand || '');
+        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko');
         if (brandCompare !== 0) return brandCompare;
-        return (a.category || '').localeCompare(b.category || '');
-      } else {
-        const catCompare = (a.category || '').localeCompare(b.category || '');
+        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko');
         if (catCompare !== 0) return catCompare;
-        return (a.brand || '').localeCompare(b.brand || '');
+        return (a.name || '').localeCompare(b.name || '', 'ko');
+      } else {
+        const catCompare = (a.category || '').localeCompare(b.category || '', 'ko');
+        if (catCompare !== 0) return catCompare;
+        const brandCompare = (a.brand || '').localeCompare(b.brand || '', 'ko');
+        if (brandCompare !== 0) return brandCompare;
+        return (a.name || '').localeCompare(b.name || '', 'ko');
       }
     });
 
@@ -303,23 +307,25 @@ export default function ProductManagement() {
     if (!products) return [];
     if (sortMode === 'manual') return [{ title: null, items: products }];
 
-    const groups: { title: string; items: any[] }[] = [];
-    
-    // Group items by the chosen field based on their CURRENT sequence in 'products'
+    const groupMap = new Map<string, any[]>();
+    const titles: string[] = [];
+
     products.forEach(p => {
       const title = sortMode === 'brand_category' 
         ? `${p.brand || '브랜드 없음'} > ${p.category || '카테고리 없음'}`
         : `${p.category || '카테고리 없음'} > ${p.brand || '브랜드 없음'}`;
       
-      const lastGroup = groups[groups.length - 1];
-      if (lastGroup && lastGroup.title === title) {
-        lastGroup.items.push(p);
-      } else {
-        groups.push({ title, items: [p] });
+      if (!groupMap.has(title)) {
+        groupMap.set(title, []);
+        titles.push(title);
       }
+      groupMap.get(title)!.push(p);
     });
 
-    return groups;
+    // Sort titles alphabetically to keep groups consistent
+    titles.sort((a, b) => a.localeCompare(b, 'ko'));
+
+    return titles.map(title => ({ title, items: groupMap.get(title)! }));
   })();
 
   const handleSaveGroup = async (e: React.FormEvent) => {
