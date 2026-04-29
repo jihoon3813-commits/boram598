@@ -216,6 +216,63 @@ export default function Statistics() {
           ))}
         </div>
       </motion.div>
+      {/* Detailed Daily Partner Stats */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
+            <Activity className="text-indigo-500" /> 일자별/파트너별 상세 실적
+          </h3>
+          <div className="text-xs text-zinc-400 font-medium">최신순 정렬</div>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-zinc-50 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                <th className="px-4 py-4 font-black">날짜</th>
+                <th className="px-4 py-4 font-black">파트너</th>
+                <th className="px-4 py-4 font-black text-center">사이트 인입</th>
+                <th className="px-4 py-4 font-black text-center">상담 신청</th>
+                <th className="px-4 py-4 font-black text-center">전환율</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-50">
+              {stats.byDatePartner.map((row, idx) => (
+                <tr key={idx} className="group hover:bg-zinc-50 transition-colors">
+                  <td className="px-4 py-4 text-sm font-medium text-zinc-500">{row.date}</td>
+                  <td className="px-4 py-4">
+                    <span className="text-sm font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{row.partner}</span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <span className="text-sm font-bold text-zinc-700">{row.visits.toLocaleString()}회</span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <span className="text-sm font-black text-amber-500">{row.applications.toLocaleString()}건</span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      (row.applications / (row.visits || 1)) > 0.1 ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-100 text-zinc-500'
+                    }`}>
+                      {(row.applications / (row.visits || 1) * 100).toFixed(1)}%
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {stats.byDatePartner.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-20 text-center text-zinc-400 font-medium">
+                    데이터가 아직 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
     </div>
   );
 }

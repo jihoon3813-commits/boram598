@@ -60,10 +60,37 @@ export const getConsultationStats = query({
 
     const totalVisits = visits.reduce((acc, curr) => acc + curr.count, 0);
 
+    const dailyPartnerStats: Record<string, Record<string, { visits: number; applications: number }>> = {};
+
+    customers.forEach((c) => {
+      const date = (c.regDate || "").split(' ')[0];
+      if (date) {
+        const pName = c.partnerName || "본사직속";
+        if (!dailyPartnerStats[date]) dailyPartnerStats[date] = {};
+        if (!dailyPartnerStats[date][pName]) dailyPartnerStats[date][pName] = { visits: 0, applications: 0 };
+        dailyPartnerStats[date][pName].applications++;
+      }
+    });
+
+    visits.forEach((v) => {
+      const pName = v.partnerName || "본사직속";
+      if (!dailyPartnerStats[v.date]) dailyPartnerStats[v.date] = {};
+      if (!dailyPartnerStats[v.date][pName]) dailyPartnerStats[v.date][pName] = { visits: 0, applications: 0 };
+      dailyPartnerStats[v.date][pName].visits += v.count;
+    });
+
+    const byDatePartner: any[] = [];
+    Object.entries(dailyPartnerStats).forEach(([date, partners]) => {
+      Object.entries(partners).forEach(([partner, data]) => {
+        byDatePartner.push({ date, partner, ...data });
+      });
+    });
+
     return {
       byDate,
       byPartner,
       byProduct,
+      byDatePartner: byDatePartner.sort((a, b) => b.date.localeCompare(a.date) || b.applications - a.applications),
       total: customers.length,
       totalVisits,
     };
