@@ -95,4 +95,10 @@ export default defineSchema({
     partnerName: v.optional(v.string()),
     count: v.number(),
   }).index("by_date", ["date"]).index("by_partnerId", ["partnerId"]),
+
+  visitLogs: defineTable({
+    ip: v.string(),
+    partnerName: v.string(),
+    timestamp: v.number(),
+  }).index("by_ip_partner", ["ip", "partnerName"]),
 });

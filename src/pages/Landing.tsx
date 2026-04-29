@@ -251,10 +251,26 @@ export default function Landing() {
   const recordVisit = useMutation(api.stats.recordVisit);
 
   useEffect(() => {
-    // Record visit only once per session/mount
-    recordVisit({ 
-      partnerName: partnerName || undefined 
-    }).catch(console.error);
+    // Fetch IP and record visit only once per session/mount
+    const fetchAndRecordVisit = async () => {
+      try {
+        // Try to get IP for unique counting
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        
+        await recordVisit({ 
+          partnerName: partnerName || undefined,
+          ip: data.ip
+        });
+      } catch (error) {
+        console.error("Failed to fetch IP, recording visit without IP", error);
+        recordVisit({ 
+          partnerName: partnerName || undefined 
+        }).catch(console.error);
+      }
+    };
+
+    fetchAndRecordVisit();
   }, []);
   const [formData, setFormData] = useState({ name: '', phone: '', product: '', paymentType: '' });
   const [submitting, setSubmitting] = useState(false);

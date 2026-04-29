@@ -101,12 +101,34 @@ export const recordVisit = mutation({
   args: {
     partnerId: v.optional(v.id("partners")),
     partnerName: v.optional(v.string()),
+    ip: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const nowKST = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+    const now = new Date().getTime();
+    const nowKST = new Date(now + 9 * 60 * 60 * 1000);
     const date = nowKST.toISOString().split('T')[0];
-    
     const pName = args.partnerName || "본사직속";
+    
+    // IP-based unique check (12 hours)
+    if (args.ip) {
+      const lastVisit = await ctx.db
+        .query("visitLogs")
+        .withIndex("by_ip_partner", (q) => q.eq("ip", args.ip!).eq("partnerName", pName))
+        .order("desc")
+        .first();
+      
+      const TWELVE_HOURS = 12 * 60 * 60 * 1000;
+      if (lastVisit && (now - lastVisit.timestamp) < TWELVE_HOURS) {
+        return; // Skip counting if within 12 hours
+      }
+      
+      // Log the visit
+      await ctx.db.insert("visitLogs", {
+        ip: args.ip,
+        partnerName: pName,
+        timestamp: now,
+      });
+    }
     
     const existing = await ctx.db
       .query("visits")
