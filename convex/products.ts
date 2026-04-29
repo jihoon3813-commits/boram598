@@ -148,9 +148,9 @@ export const deleteGroup = mutation({
 
 // Products
 export const listProducts = query({
-  args: { groupId: v.optional(v.id("productGroups")) },
+  args: { groupId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const { groupId } = args;
+    const groupId = args.groupId as any;
     if (groupId) {
       const products = await ctx.db
         .query("products")
@@ -228,6 +228,20 @@ export const getGroup = query({
   },
 });
 
+export const clearGroupProducts = mutation({
+  args: { groupId: v.string() },
+  handler: async (ctx, args) => {
+    const groupId = args.groupId as any;
+    const existing = await ctx.db
+      .query("products")
+      .withIndex("by_groupId", (q) => q.eq("groupId", groupId))
+      .collect();
+    for (const p of existing) {
+      await ctx.db.delete(p._id);
+    }
+  },
+});
+
 export const syncProducts = mutation({
   args: {
     groupId: v.id("productGroups"),
@@ -257,6 +271,21 @@ export const syncProducts = mutation({
     }
     
     // Add new
+    for (const p of products) {
+      await ctx.db.insert("products", { ...p, groupId });
+    }
+  },
+});
+
+export const addProductsBulk = mutation({
+  args: {
+    groupId: v.string(),
+    jsonData: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { jsonData } = args;
+    const groupId = args.groupId as any;
+    const products = JSON.parse(jsonData);
     for (const p of products) {
       await ctx.db.insert("products", { ...p, groupId });
     }
@@ -295,7 +324,9 @@ export const autoCategorizeAll = mutation({
     const brandKeywords = [
       "삼성", "LG", "쿠쿠", "쿠첸", "위니아", "캐리어", "다이슨", "테팔", 
       "필립스", "드롱기", "네스프레소", "샤오미", "일렉트로룩스", "에이서", "HP", "레노버",
-      "발뮤다", "코웨이", "청호나이스", "SK매직", "경동나비엔"
+      "발뮤다", "코웨이", "청호나이스", "SK매직", "경동나비엔", 
+      "혼마", "카타나", "야마하", "마루망", "다솜", "바디프랜드", "휴테크", "코지마", "세라젬", "로봇킹",
+      "소노시즌"
     ];
 
     const categoryMap: { [key: string]: string[] } = {
@@ -309,7 +340,11 @@ export const autoCategorizeAll = mutation({
       "생활가전": ["스타일러", "에어드레서", "식기세척기", "정수기", "비데", "가습기", "제습기"],
       "계절가전": ["온수매트", "전기매트", "선풍기", "히터"],
       "주방가전": ["믹서기", "커피머신", "토스터", "전기포트"],
-      "컴퓨터/노트북": ["컴퓨터", "노트북", "PC", "태블릿", "아이패드", "갤럭시탭"]
+      "컴퓨터/노트북": ["컴퓨터", "노트북", "PC", "태블릿", "아이패드", "갤럭시탭"],
+      "안마의자/건강": ["안마의자", "세라젬", "마사지", "안마기"],
+      "골프용품": ["골프클럽", "파크골프", "골프", "풀세트"],
+      "스마트기기/로봇": ["돌봄로봇", "다솜", "로봇", "스마트"],
+      "가구/침구": ["매트리스", "침대", "소파", "가구", "소노시즌"]
     };
 
     let count = 0;

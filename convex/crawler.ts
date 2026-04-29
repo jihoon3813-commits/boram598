@@ -23,6 +23,33 @@ export const fetchProductsFromUrlV3 = action({
       const siteBaseUrl = isLifenuri ? "https://boram.lifenuri.com" : urlObj.origin;
 
       let goods: any[] = [];
+      const products: any[] = [];
+      const isJsonSync = url.includes("gist.githubusercontent.com") || url.endsWith(".json");
+
+      if (isJsonSync) {
+        console.log(`JSON Sync: url=${url}`);
+        const resp = await axios.get(url, { timeout: 15000 });
+        const data = Array.isArray(resp.data) ? resp.data : (resp.data.products || []);
+        
+        products.push(...data.map((p: any, idx: number) => ({
+          ...p,
+          order: idx,
+        })));
+        
+        if (products.length > 0) {
+          const existing: any[] = await ctx.runQuery(api.products.listProducts, { groupId: args.groupId });
+          for (const p of existing) {
+            await ctx.runMutation(api.products.deleteProduct, { id: p._id });
+          }
+          for (const p of products) {
+            await ctx.runMutation(api.products.addProduct, {
+              groupId: args.groupId,
+              ...p,
+            });
+          }
+        }
+        return { count: products.length };
+      }
 
       if (isLifenuri) {
         const parts = url.split('/');
@@ -50,7 +77,8 @@ export const fetchProductsFromUrlV3 = action({
                   "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                   "Referer": url,
                   "Origin": siteBaseUrl,
-                  "Accept": "application/json, text/plain, */*",
+                  "Accept": "application/json, text/javascript, */*; q=0.01",
+                  "X-Requested-With": "XMLHttpRequest",
                   "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
                 },
                 timeout: 30000
@@ -123,7 +151,6 @@ export const fetchProductsFromUrlV3 = action({
         }));
       }
 
-      const products: any[] = [];
       const chunkSize = 5; 
       
       for (let i = 0; i < goods.length; i += chunkSize) {
