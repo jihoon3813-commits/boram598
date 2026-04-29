@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { motion } from "motion/react";
@@ -14,6 +15,7 @@ import {
 
 export default function Statistics() {
   const stats = useQuery(api.stats.getConsultationStats);
+  const [selectedPartner, setSelectedPartner] = useState<string | null>("전체");
 
   if (!stats) {
     return (
@@ -216,17 +218,43 @@ export default function Statistics() {
           ))}
         </div>
       </motion.div>
-      {/* Detailed Daily Partner Stats */}
+      {/* Detailed Daily Partner Stats with Selection */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm"
       >
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
-            <Activity className="text-indigo-500" /> 일자별/파트너별 상세 실적
+            <Activity className="text-indigo-500" /> 파트너별 상세 실적 추이
           </h3>
-          <div className="text-xs text-zinc-400 font-medium">최신순 정렬</div>
+          
+          {/* Partner Selection Tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar max-w-full md:max-w-[60%]">
+            <button
+              onClick={() => setSelectedPartner("전체")}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                selectedPartner === "전체"
+                  ? 'bg-zinc-900 text-white shadow-lg'
+                  : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+              }`}
+            >
+              전체 보기
+            </button>
+            {stats.byPartner.map((p) => (
+              <button
+                key={p.partner}
+                onClick={() => setSelectedPartner(p.partner)}
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                  selectedPartner === p.partner
+                    ? 'bg-indigo-600 text-white shadow-lg'
+                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                }`}
+              >
+                {p.partner}
+              </button>
+            ))}
+          </div>
         </div>
         
         <div className="overflow-x-auto">
@@ -241,7 +269,9 @@ export default function Statistics() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-50">
-              {stats.byDatePartner.map((row, idx) => (
+              {stats.byDatePartner
+                .filter(row => selectedPartner === "전체" || row.partner === selectedPartner)
+                .map((row, idx) => (
                 <tr key={idx} className="group hover:bg-zinc-50 transition-colors">
                   <td className="px-4 py-4 text-sm font-medium text-zinc-500">{row.date}</td>
                   <td className="px-4 py-4">
@@ -262,10 +292,10 @@ export default function Statistics() {
                   </td>
                 </tr>
               ))}
-              {stats.byDatePartner.length === 0 && (
+              {stats.byDatePartner.filter(row => selectedPartner === "전체" || row.partner === selectedPartner).length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-4 py-20 text-center text-zinc-400 font-medium">
-                    데이터가 아직 없습니다.
+                    해당 파트너의 데이터가 아직 없습니다.
                   </td>
                 </tr>
               )}
