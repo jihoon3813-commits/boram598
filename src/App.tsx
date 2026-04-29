@@ -13,6 +13,7 @@ import PartnerDashboard from './pages/partner/Dashboard';
 import PartnerSettings from './pages/partner/Settings';
 import AdminLogin from './pages/admin/Login';
 import PartnerLogin from './pages/partner/Login';
+import Statistics from './pages/admin/Statistics';
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm">
@@ -87,7 +88,7 @@ export default function App() {
           <Route path="products" element={<ErrorBoundary><ProductManagement /></ErrorBoundary>} />
           <Route path="promotions" element={<ErrorBoundary><Placeholder title="프로모션 관리" /></ErrorBoundary>} />
           <Route path="library" element={<ErrorBoundary><Placeholder title="자료실" /></ErrorBoundary>} />
-          <Route path="statistics" element={<ErrorBoundary><Placeholder title="통계분석" /></ErrorBoundary>} />
+          <Route path="statistics" element={<ErrorBoundary><Statistics /></ErrorBoundary>} />
           <Route path="settings" element={<ErrorBoundary><Settings /></ErrorBoundary>} />
         </Route>
 
