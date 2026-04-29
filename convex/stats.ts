@@ -53,6 +53,11 @@ export const getConsultationStats = query({
       }))
       .sort((a, b) => b.count - a.count);
 
+    const byProduct = Object.entries(statsByProduct)
+      .map(([product, count]) => ({ product, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
     const totalVisits = visits.reduce((acc, curr) => acc + curr.count, 0);
 
     return {
