@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export default function Statistics() {
-  const stats = useQuery(api.customers.getStats);
+  const stats = useQuery(api.stats.getConsultationStats);
 
   if (!stats) {
     return (
