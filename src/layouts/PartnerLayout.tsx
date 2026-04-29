@@ -59,7 +59,7 @@ export default function PartnerLayout() {
         <div className="p-6 border-b border-zinc-700 flex items-center justify-between">
           <div>
             <img 
-              src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
+              src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
               alt="Logo" 
               className="h-10 w-auto brightness-0 invert" 
             />
