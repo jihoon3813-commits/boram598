@@ -71,9 +71,9 @@ export default function PartnerApply() {
             </Link>
             <Link to="/" className="flex items-center gap-2">
               <img 
-                src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
+                src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
                 alt="Logo" 
-                className="h-12 w-auto" 
+                className="h-16 w-auto" 
               />
             </Link>
           </div>

@@ -87,11 +87,13 @@ export const fetchProductsFromUrlV3 = action({
             break;
           } catch (e: any) {
             retries--;
+            const errMsg = e.message || e.code || String(e);
             if (retries === 0) {
               const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
-              throw new Error(`Lifenuri API Error (Final): ${e.message} | Data: ${errorData}`);
+              const errorStatus = e.response?.status ? `Status: ${e.response.status} | ` : "";
+              throw new Error(`Lifenuri API Error (Final): ${errMsg} | ${errorStatus}Data: ${errorData}`);
             }
-            console.log(`Lifenuri Retry: ${retries} left. Error: ${e.message}`);
+            console.log(`Lifenuri Retry: ${retries} left. Error: ${errMsg}`);
             await new Promise(r => setTimeout(r, 2000));
           }
         }

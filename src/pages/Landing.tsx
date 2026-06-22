@@ -66,9 +66,9 @@ const Navbar = ({ onContactClick, onProductsClick }: { onContactClick: () => voi
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-3">
           <img 
-            src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
+            src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
             alt="Logo" 
-            className={`h-5 w-auto transition-all duration-500 ${scrolled ? '' : 'brightness-0 invert'}`} 
+            className={`h-8 w-auto transition-all duration-500 ${scrolled ? '' : 'brightness-0 invert'}`} 
           />
         </Link>
         
@@ -581,9 +581,9 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6">
           <FadeIn className="text-center mb-10 md:mb-20 flex flex-col items-center">
             <img 
-              src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777120929/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_ss9wsm.png" 
+              src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
               alt="Boram Sangjo Logo" 
-              className="h-12 w-auto mb-6 opacity-80"
+              className="h-16 w-auto mb-6 opacity-80"
             />
 
             <h3 className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
@@ -1286,9 +1286,9 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
             <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-2 group">
               <img 
-                src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
+                src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
                 alt="Logo" 
-                className="h-6 w-auto brightness-0 invert opacity-80" 
+                className="h-10 w-auto brightness-0 invert opacity-80" 
               />
             </Link>
             <div className="flex gap-8 text-sm font-bold tracking-wide">

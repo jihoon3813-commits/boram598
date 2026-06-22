@@ -59,9 +59,9 @@ export default function PartnerLayout() {
         <div className="p-6 border-b border-zinc-700 flex items-center justify-between">
           <div>
             <img 
-              src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777447152/KakaoTalk_20260429_161516963_ejwlfu.png" 
+              src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
               alt="Logo" 
-              className="h-4 w-auto brightness-0 invert" 
+              className="h-8 w-auto brightness-0 invert" 
             />
             <div className="mt-1 text-[10px] font-bold text-amber-500 uppercase tracking-widest">파트너 어드민</div>
           </div>

@@ -16,6 +16,7 @@ import type * as partners from "../partners.js";
 import type * as products from "../products.js";
 import type * as seed from "../seed.js";
 import type * as settings from "../settings.js";
+import type * as stats from "../stats.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   products: typeof products;
   seed: typeof seed;
   settings: typeof settings;
+  stats: typeof stats;
 }>;
 
 /**

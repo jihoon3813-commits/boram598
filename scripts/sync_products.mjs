@@ -153,8 +153,6 @@ async function sync() {
           originalUrl: productUrl,
           paymentMethods,
           detailHtml,
-          showOnMain: true,
-          order: products.length
         });
       }
 
