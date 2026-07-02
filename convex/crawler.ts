@@ -54,53 +54,81 @@ export const fetchProductsFromUrlV3 = action({
       if (isLifenuri) {
         const parts = url.split('/');
         let themesNo = parseInt(parts[parts.length - 1]);
+        
+        let themeIds: number[] = [];
         if (url.includes("themesgroup")) {
-          // themesgroup/140 usually maps to themes/139 for the list API
-          themesNo = themesNo - 1;
+          const groupNo = themesNo;
+          if (groupNo === 135) {
+            themeIds = [131, 132, 133, 134, 151, 160];
+          } else if (groupNo === 140) {
+            themeIds = [136, 137, 138, 139, 152, 156, 157];
+          } else if (groupNo === 145) {
+            themeIds = [141, 142, 143, 144, 148, 154, 158];
+          } else if (groupNo === 150) {
+            themeIds = [146, 147, 149, 153];
+          } else {
+            themeIds = [groupNo - 1];
+          }
+        } else {
+          themeIds = [themesNo];
         }
-        
-        console.log(`Lifenuri Fetch: themesNo=${themesNo}, url=${url}`);
-        
-        const params = new URLSearchParams();
-        params.append('actions', 'goods');
-        params.append('themes_no', themesNo.toString());
 
-        let resp: any = null;
-        let retries = 3;
-        while (retries > 0) {
-          try {
-            resp = await axios.post(`${siteBaseUrl}/shop/themes/${themesNo}/list`, 
-              params.toString(), 
-              {
-                headers: {
-                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-                  "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                  "Referer": url,
-                  "Origin": siteBaseUrl,
-                  "Accept": "application/json, text/javascript, */*; q=0.01",
-                  "X-Requested-With": "XMLHttpRequest",
-                  "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
-                },
-                timeout: 30000
+        console.log(`Lifenuri Fetch for Group ${themesNo}: themes=${themeIds.join(',')}`);
+
+        const rawGoods: any[] = [];
+        const seenGoodsCodes = new Set<string>();
+
+        for (const id of themeIds) {
+          const params = new URLSearchParams();
+          params.append('actions', 'goods');
+          params.append('themes_no', id.toString());
+
+          let resp: any = null;
+          let retries = 3;
+          while (retries > 0) {
+            try {
+              resp = await axios.post(`${siteBaseUrl}/shop/themes/${id}/list`, 
+                params.toString(), 
+                {
+                  headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "Referer": url,
+                    "Origin": siteBaseUrl,
+                    "Accept": "application/json, text/javascript, */*; q=0.01",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+                  },
+                  timeout: 30000
+                }
+              );
+              break;
+            } catch (e: any) {
+              retries--;
+              const errMsg = e.message || e.code || String(e);
+              if (retries === 0) {
+                console.warn(`Lifenuri API Warning for theme ${id}: ${errMsg}`);
+                break;
               }
-            );
-            break;
-          } catch (e: any) {
-            retries--;
-            const errMsg = e.message || e.code || String(e);
-            if (retries === 0) {
-              const errorData = e.response?.data ? JSON.stringify(e.response.data).substring(0, 200) : "No response data";
-              const errorStatus = e.response?.status ? `Status: ${e.response.status} | ` : "";
-              throw new Error(`Lifenuri API Error (Final): ${errMsg} | ${errorStatus}Data: ${errorData}`);
+              console.log(`Lifenuri Retry for theme ${id}: ${retries} left. Error: ${errMsg}`);
+              await new Promise(r => setTimeout(r, 2000));
             }
-            console.log(`Lifenuri Retry: ${retries} left. Error: ${errMsg}`);
-            await new Promise(r => setTimeout(r, 2000));
+          }
+
+          if (resp?.data?.themeslistrow) {
+            for (const item of resp.data.themeslistrow) {
+              const code = String(item.goods_code);
+              if (!seenGoodsCodes.has(code)) {
+                seenGoodsCodes.add(code);
+                rawGoods.push(item);
+              }
+            }
           }
         }
-        
-        console.log(`Lifenuri Resp: status=${resp?.status}, keys=${Object.keys(resp?.data || {}).join(',')}`);
-        
-        goods = (resp?.data?.themeslistrow || []).map((item: any) => ({
+
+        console.log(`Lifenuri Fetch completed: total unique goods = ${rawGoods.length}`);
+
+        goods = rawGoods.map((item: any) => ({
           g_no: item.goods_code,
           name: item.goods_title,
           thumbnail: item.goods_image_main2,
