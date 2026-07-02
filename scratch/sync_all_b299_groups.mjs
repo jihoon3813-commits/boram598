@@ -44,22 +44,22 @@ async function main() {
   const mappings = [
     {
       key: "1",
-      themes: [131, 132, 133, 134, 151, 160],
+      themes: [134],
       groupNamePattern: "B299 1"
     },
     {
       key: "2",
-      themes: [136, 137, 138, 139, 152, 156, 157],
+      themes: [139],
       groupNamePattern: "B299 2"
     },
     {
       key: "3",
-      themes: [141, 142, 143, 144, 148, 154, 158],
+      themes: [144],
       groupNamePattern: "B299 3"
     },
     {
       key: "4",
-      themes: [146, 147, 149, 153],
+      themes: [149],
       groupNamePattern: "B299 4"
     }
   ];
