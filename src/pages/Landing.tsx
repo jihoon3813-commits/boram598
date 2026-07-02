@@ -443,7 +443,7 @@ export default function Landing() {
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
             transition={{ duration: 10, ease: "easeOut" }}
-            src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777179649/Gemini_Generated_Image_nldu0cnldu0cnldu_cxwgom.png" 
+            src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782979116/Generated_Image_April_26_2026_-_1_52PM_a3h7vx.jpg" 
             alt="Luxury Interior" 
             className="w-full h-full object-cover opacity-60"
           />
@@ -794,7 +794,7 @@ export default function Landing() {
                 {/* Image Area (Placeholder) */}
                 <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
-                    src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/04494_img_imuqfu.png" 
+                    src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782978574/04494_img_ili6is.png" 
                     alt="KB Kookmin Card" 
                     className="w-full h-full object-cover"
                   />
@@ -846,7 +846,7 @@ export default function Landing() {
                 {/* Image Area (Placeholder) */}
                 <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
-                    src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/2224_ckgnks.png" 
+                    src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782979039/2224_rkajon.png" 
                     alt="Lotte Card" 
                     className="w-full h-full object-cover"
                   />
@@ -898,7 +898,7 @@ export default function Landing() {
                 {/* Image Area (Placeholder) */}
                 <div className="w-[70%] sm:w-full lg:w-1/2 aspect-[1.58/1] bg-zinc-100 rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center border border-zinc-200 mx-auto">
                   <img 
-                    src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777336662/13258_v06xvv.png" 
+                    src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782978573/13258_nxjmqj.png" 
                     alt="Hana Card" 
                     className="w-full h-full object-cover"
                   />
@@ -1217,7 +1217,7 @@ export default function Landing() {
             <div className="hidden lg:block lg:w-2/5 relative">
               <FadeIn delay={0.3} className="relative z-10">
                 <img 
-                  src="https://res.cloudinary.com/dx7l09wwu/image/upload/v1777276561/%ED%8A%B8%EB%A1%9C%ED%94%BC_tplfnu.png" 
+                  src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782979113/%ED%8A%B8%EB%A1%9C%ED%94%BC_f1yrri.png" 
                   alt="Boram Sangjo Trophy" 
                   className="w-full h-auto drop-shadow-[0_0_50px_rgba(245,158,11,0.3)]"
                 />
