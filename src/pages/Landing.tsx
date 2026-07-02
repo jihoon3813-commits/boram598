@@ -1281,52 +1281,77 @@ export default function Landing() {
       </section>
 
       {/* --- Footer --- */}
-      <footer className="bg-zinc-950 text-zinc-500 py-16 border-t border-zinc-900 font-sans">
+      <footer className="bg-zinc-950 text-zinc-500 py-20 border-t border-zinc-900">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Logo & Login links */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 pb-8 border-b border-zinc-900">
-            <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+            <Link to={partnerName ? `/${partnerName}` : "/"} className="flex items-center gap-2 group">
               <img 
                 src="https://res.cloudinary.com/dfkntvpmv/image/upload/v1782112100/%EB%A1%9C%EA%B3%A0_%EB%B0%B0%EA%B2%BD%EC%82%AD%EC%A0%9C_nhhrye.png" 
                 alt="Logo" 
-                className="h-8 w-auto brightness-0 invert opacity-80" 
+                className="h-10 w-auto brightness-0 invert opacity-80" 
               />
             </Link>
-            <div className="flex gap-6 text-xs text-zinc-700">
-              <a href="/admin/login" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">본사 로그인</a>
-              <span className="text-zinc-800">|</span>
-              <a href="/partner/login" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">파트너 로그인</a>
+            <div className="flex gap-8 text-sm font-bold tracking-wide">
+              <a href="#" className="hover:text-white transition-colors">이용약관</a>
+              <a href="#" className="text-white hover:text-amber-500 transition-colors font-black">개인정보처리방침</a>
+              <a href="/admin/login" target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:text-white transition-colors">본사 로그인</a>
+              <a href="/partner/login" target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:text-white transition-colors">파트너 로그인</a>
             </div>
           </div>
 
-          <div className="space-y-6 text-xs sm:text-sm font-normal leading-relaxed text-zinc-500">
-            {/* Company Info */}
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span>(주)라이프앤조이</span>
-              <span className="text-zinc-800">/</span>
-              <span>대표자 : 김지훈</span>
-              <span className="text-zinc-800">/</span>
-              <span>사업자등록번호 : 388-86-02921 (통신판매신고번호: 2024-경기하남-1853호)</span>
-              <span className="text-zinc-800">/</span>
-              <span className="w-full sm:w-auto">주소 : 경기도 하남시 미사대로 510, 624호(아이에스비즈타워)</span>
-              <span className="text-zinc-800 hidden sm:inline">/</span>
-              <span>고객센터 : 1588-0883</span>
-              <span className="text-zinc-800">/</span>
-              <span>이메일 : lifenjoy0296@gmail.com</span>
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+            {/* Left: Company Info */}
+            <div className="lg:col-span-8 space-y-12">
+              {/* Distributor */}
+              <div className="space-y-3">
+                <h5 className="text-zinc-200 font-black text-sm uppercase tracking-widest border-l-4 border-amber-500 pl-3">총판사</h5>
+                <div className="text-xs font-light space-y-1.5 leading-relaxed opacity-80">
+                  <p className="text-zinc-300 font-bold text-sm">(주)라이프앤조이 | 대표 : 김지훈</p>
+                  <p>경기도 하남시 미사대로 510, 624호(아이에스비즈타워)</p>
+                  <p>사업자등록번호: 388-86-02921 | 통신판매신고번호: 2024-경기하남-1853호</p>
+                  <p>E-mail: lifenjoy0296@gmail.com | 개인정보보호책임자: 김지훈(lifenjoy0296@gmail.co.kr)</p>
+                  <p className="mt-3 text-zinc-600">Copyright(c)2026 LIFE&JOY Co.,Ltd. All Right Reserved.</p>
+                </div>
+              </div>
+
+              {/* Service Organizer */}
+              <div className="space-y-3">
+                <h5 className="text-zinc-200 font-black text-sm uppercase tracking-widest border-l-4 border-zinc-700 pl-3">상조서비스 주관사</h5>
+                <div className="text-xs font-light space-y-1.5 leading-relaxed opacity-80">
+                  <p className="text-zinc-300 font-bold text-sm">보람상조피플(주) | 대표 : 김충현</p>
+                  <p>서울특별시 성동구 광나루로 130, 서울숲TI캐슬 7층</p>
+                  <p>사업자등록번호: 220-87-79209 | 통신판매업신고번호: 제2014-서울성동-0606호</p>
+                  <p className="mt-3 text-zinc-600">Copyright(c)2026 BORAM Co.,Ltd. All Right Reserved.</p>
+                </div>
+              </div>
             </div>
 
-            {/* Links */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs pt-2">
-              <a href="#" className="hover:text-white transition-colors">이용약관</a>
-              <span className="text-zinc-800">/</span>
-              <a href="#" className="text-zinc-300 hover:text-white transition-colors font-bold">개인정보처리방침</a>
-              <span className="text-zinc-800">/</span>
-              <a href="#" className="hover:text-white transition-colors">이메일무단수집거부</a>
-            </div>
-
-            {/* Copyright */}
-            <div className="text-xs text-zinc-600 pt-4">
-              Copyright Pampas Life. All rights reserved.
+            {/* Right: Customer Center */}
+            <div className="lg:col-span-4 bg-zinc-900/50 rounded-3xl p-8 border border-zinc-800/50">
+              <h5 className="text-zinc-100 font-black text-lg mb-6 flex items-center gap-2">
+                <Phone size={20} className="text-amber-500" />
+                보람상조피플(주) 고객센터
+              </h5>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">고객센터</p>
+                  <p className="text-3xl font-black text-white tracking-tighter">1588-7979</p>
+                </div>
+                <div>
+                  <p className="text-amber-500 text-xs font-bold uppercase tracking-widest mb-1">24시 긴급행사(장례접수)</p>
+                  <p className="text-3xl font-black text-amber-500 tracking-tighter">1577-1009</p>
+                </div>
+                <div className="pt-6 border-t border-zinc-800 space-y-2 text-xs font-medium">
+                  <p className="flex justify-between">
+                    <span className="text-zinc-500">일반 상담</span>
+                    <span className="text-zinc-300">09:00 ~ 18:00</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-zinc-500">긴급행사 운영</span>
+                    <span className="text-zinc-300">연중무휴 24시간</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
