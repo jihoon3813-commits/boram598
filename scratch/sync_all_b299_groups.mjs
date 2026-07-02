@@ -2,6 +2,7 @@ import axios from "axios";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api.js";
 import * as dotenv from "dotenv";
+import fs from "fs";
 dotenv.config({ path: ".env.local" });
 
 const isProd = process.argv.includes("--prod");
@@ -105,6 +106,11 @@ async function main() {
     }
 
     console.log(`Total unique products to sync for "${groupDoc.name}": ${products.length}`);
+
+    // Save to public/ folder as JSON
+    const publicPath = `public/b299_${mapping.key}.json`;
+    fs.writeFileSync(publicPath, JSON.stringify(products, null, 2), "utf8");
+    console.log(`  Saved products to local public folder: ${publicPath}`);
 
     if (products.length > 0) {
       console.log("  Clearing existing products...");

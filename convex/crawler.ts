@@ -16,9 +16,26 @@ export const fetchProductsFromUrlV3 = action({
       const group = await ctx.runQuery(api.products.getGroup, { id: args.groupId });
       if (!group) throw new Error("Group not found");
 
-      const url = args.url;
-      const urlObj = new URL(url);
+      let url = args.url;
       const isLifenuri = url.includes("lifenuri.com");
+      
+      // Auto-fallback redirect for Lifenuri to avoid ETIMEDOUT IP blocks on Convex Cloud
+      if (isLifenuri && url.includes("themesgroup")) {
+        const parts = url.split('/');
+        const themesNo = parseInt(parts[parts.length - 1]);
+        let jsonKey = "";
+        if (themesNo === 135) jsonKey = "1";
+        else if (themesNo === 140) jsonKey = "2";
+        else if (themesNo === 145) jsonKey = "3";
+        else if (themesNo === 150) jsonKey = "4";
+
+        if (jsonKey) {
+          url = `https://raw.githubusercontent.com/jihoon3813-commits/boram598/main/public/b299_${jsonKey}.json`;
+          console.log(`Lifenuri crawler redirected to GitHub backup: ${url}`);
+        }
+      }
+
+      const urlObj = new URL(url);
       const isBoram = url.includes("xn--299ar6vqrd.com") || url.includes("보람상조.com") || url.includes("bilrigo.com");
       const siteBaseUrl = isLifenuri ? "https://boram.lifenuri.com" : urlObj.origin;
 
